@@ -9,11 +9,12 @@ export function initializeKeycloak(keycloak: KeycloakService, platformId: Object
         config: {
           url: 'http://localhost:6491',
           realm: 'library-hub-services',
-          clientId: 'library-hub-api',
+          clientId: 'library-hub-api'
         },
-        loadUserProfileAtStartUp: true,
+        loadUserProfileAtStartUp: false,
         initOptions: {
-          onLoad: 'login-required',
+          onLoad: 'check-sso',
+          silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
           checkLoginIframe: false,
           pkceMethod: 'S256',
         },

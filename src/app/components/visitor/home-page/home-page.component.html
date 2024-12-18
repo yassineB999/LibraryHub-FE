@@ -1,1 +1,170 @@
-<p>home-page works!</p>
+<div class="home-container">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <i class="pi pi-book"></i>
+                LibraryHub
+            </a>
+            <button class="burger-menu" (click)="toggleMenu()">
+                <i class="pi" [ngClass]="{'pi-bars': !isMenuOpen, 'pi-times': isMenuOpen}"></i>
+            </button>
+            <nav class="nav-menu" [class.active]="isMenuOpen">
+                <a (click)="scrollToSection('hero')" class="nav-link">Home</a>
+                <a (click)="scrollToSection('features')" class="nav-link">Features</a>
+                <a (click)="scrollToSection('why-choose')" class="nav-link">Why Choose Us</a>
+                <a (click)="scrollToSection('technologies')" class="nav-link">Technologies</a>
+                <button pButton label="Login" icon="pi pi-user" (click)="login()" class="p-button-text"></button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Modern Library Management System</h1>
+            <p class="hero-subtitle">A powerful platform built with cutting-edge technologies for efficient library operations
+            </p>
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <i class="pi pi-search search-icon"></i>
+                    <input type="text" pInputText placeholder="Search for books, authors, or genres..." class="search-input">
+                </div>
+                <button pButton label="Search" class="p-button-primary search-button"></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section" id="features">
+        <div class="categories-container">
+            <div class="category-card" [class.active]="selectedCategory === 'Categories'" (click)="selectedCategory = 'Categories'">
+                <div class="category-icon-wrapper">
+                    <i class="pi pi-list"></i>
+                </div>
+                <h3>Categories</h3>
+                <p>Browse all book categories</p>
+                <div class="hover-indicator"></div>
+            </div>
+            
+            <div class="category-card" [class.active]="selectedCategory === 'New Releases'" (click)="selectedCategory = 'New Releases'">
+                <div class="category-icon-wrapper">
+                    <i class="pi pi-star"></i>
+                </div>
+                <h3>New Releases</h3>
+                <p>Latest additions to our library</p>
+                <div class="hover-indicator"></div>
+            </div>
+            
+            <div class="category-card" [class.active]="selectedCategory === 'Popular'" (click)="selectedCategory = 'Popular'">
+                <div class="category-icon-wrapper">
+                    <i class="pi pi-heart-fill"></i>
+                </div>
+                <h3>Popular</h3>
+                <p>Most read books this month</p>
+                <div class="hover-indicator"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="why-choose">
+        <div class="features-container">
+            <h2 class="section-title">Why Choose LibraryHub?</h2>
+            <div class="features-grid">
+                <div *ngFor="let feature of features" class="feature-card">
+                    <div class="feature-icon-wrapper" [style.background-color]="feature.iconBg">
+                        <i [class]="feature.icon"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h3>{{feature.title}}</h3>
+                        <p>{{feature.description}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technologies Section -->
+    <section class="technologies-section" id="technologies">
+        <div class="tech-container">
+            <h2 class="section-title">Powered by Modern Technologies</h2>
+            
+            <!-- Frontend Stack -->
+            <div class="tech-group">
+                <h3 class="tech-group-title">Frontend Stack</h3>
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <img src="assets/icons/angular.svg" alt="Angular" class="tech-icon">
+                        <h4>Angular</h4>
+                        <p>Modern web framework</p>
+                    </div>
+                    <div class="tech-card">
+                        <img src="assets/icons/typescript.svg" alt="TypeScript" class="tech-icon">
+                        <h4>TypeScript</h4>
+                        <p>Type-safe JavaScript</p>
+                    </div>
+                    <div class="tech-card">
+                        <img src="assets/icons/primeng.svg" alt="PrimeNG" class="tech-icon">
+                        <h4>PrimeNG</h4>
+                        <p>UI Component Library</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Backend Stack -->
+            <div class="tech-group">
+                <h3 class="tech-group-title">Backend Stack</h3>
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <img src="assets/icons/spring-boot.svg" alt="Spring Boot" class="tech-icon">
+                        <h4>Spring Boot</h4>
+                        <p>High-performance Java framework</p>
+                    </div>
+                    <div class="tech-card">
+                        <img src="assets/icons/mongodb.svg" alt="MongoDB" class="tech-icon">
+                        <h4>MongoDB</h4>
+                        <p>NoSQL Database</p>
+                    </div>
+                    <div class="tech-card">
+                        <img src="assets/icons/postgresql.svg" alt="PostgreSQL" class="tech-icon">
+                        <h4>PostgreSQL</h4>
+                        <p>Advanced Open Source Relational Database</p>
+                    </div>
+                    <div class="tech-card">
+                        <img src="assets/icons/keycloak.svg" alt="Keycloak" class="tech-icon">
+                        <h4>Keycloak</h4>
+                        <p>Identity and Access Management</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Development Tools -->
+            <div class="tech-group">
+                <h3 class="tech-group-title">Development & Deployment</h3>
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <img src="assets/icons/git.svg" alt="Git" class="tech-icon">
+                        <h4>Git</h4>
+                        <p>Distributed Version Control System</p>
+                    </div>
+                    <div class="tech-card">
+                        <img src="assets/icons/maven.svg" alt="Maven" class="tech-icon">
+                        <h4>Maven</h4>
+                        <p>Java Build & Dependency Management</p>
+                    </div>
+                    <div class="tech-card">
+                        <img src="assets/icons/docker.svg" alt="Docker" class="tech-icon">
+                        <h4>Docker</h4>
+                        <p>Container Platform for Deployment</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="simple-footer">
+        <p>&copy; 2024 LibraryHub. All rights reserved.</p>
+    </footer>
+</div>
