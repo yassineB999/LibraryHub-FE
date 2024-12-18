@@ -3,25 +3,28 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guard/auth.guard';
 
 const routes: Routes = [
-  { 
-    path: 'books', 
-    loadChildren: () => import('./books/books.module').then(m => m.BooksModule), 
-    canActivate: [AuthGuard]   
-  },
-  { 
-    path: 'home', 
-    loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePageModule), 
-    canActivate: [AuthGuard] 
-  },
-  { 
-    path: '', 
-    redirectTo: 'home', 
-    pathMatch: 'full' 
-  },
-  { 
-    path: '**', 
-    redirectTo: 'home' 
-  }
+  // ROUTES FOR VISITOR
+  { path: 'LibraryHub/Home', loadChildren: () => import('./components/visitor/home-page/home-page.module').then(m => m.HomePageModule) },
+  // END ROUTES FOR VISITOR
+
+
+
+  // ROUTES FOR USER
+  { path: 'LibraryHub/User/Books', loadChildren: () => import('./components/user/books/books.module').then(m => m.BooksModule), canActivate: [AuthGuard], data: { expectedRoles: ['ROLE_USER'] }},
+  // END ROUTES FOR USER
+
+
+
+  // ROUTES FOR ADMIN
+
+  // END ROUTES FOR ADMIN
+
+
+
+  // WRONG PATH URL
+  { path: '', redirectTo: 'LibraryHub/Home', pathMatch: 'full' },
+  { path: '**', redirectTo: 'LibraryHub/Home' }
+  // END WRONG PATH URL
 ];
 
 @NgModule({

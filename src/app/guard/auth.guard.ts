@@ -38,7 +38,7 @@ export class AuthGuard extends KeycloakAuthGuard {
     }
 
     // Get the roles required from the route.
-    const requiredRoles: string[] = route.data['roles'];
+    const requiredRoles: string[] = route.data['expectedRoles'];
 
     // Allow the user to proceed if no additional roles are required to access the route.
     if (!requiredRoles || requiredRoles.length === 0) {
