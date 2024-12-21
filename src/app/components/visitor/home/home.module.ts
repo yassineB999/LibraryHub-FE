@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { HomePageRoutingModule } from './home-page-routing.module';
-import { HomePageComponent } from './home-page.component';
 
 // PrimeNG Modules
 import { ButtonModule } from 'primeng/button';
@@ -13,10 +12,11 @@ import { ImageModule } from 'primeng/image';
 import { MenubarModule } from 'primeng/menubar';
 import { RippleModule } from 'primeng/ripple';
 import { ToolbarModule } from 'primeng/toolbar';
+import { HomeComponent } from './home.component';
 
 @NgModule({
   declarations: [
-    HomePageComponent
+    HomeComponent
   ],
   imports: [
     // Angular Modules
@@ -34,4 +34,4 @@ import { ToolbarModule } from 'primeng/toolbar';
     ToolbarModule
   ]
 })
-export class HomePageModule { }
+export class HomeModule { }

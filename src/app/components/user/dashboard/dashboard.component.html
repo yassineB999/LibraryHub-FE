@@ -1,0 +1,79 @@
+<app-navbar>
+    
+</app-navbar>
+<div class="dashboard-container">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h1>Welcome back, {{username}}!</h1>
+      <p>Here's an overview of your library activity</p>
+    </div>
+  
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stats-card borrowed">
+        <i class="pi pi-book"></i>
+        <div class="stats-content">
+          <h3>{{bookStats.borrowed}}</h3>
+          <p>Borrowed Books</p>
+        </div>
+      </div>
+      <div class="stats-card reserved">
+        <i class="pi pi-clock"></i>
+        <div class="stats-content">
+          <h3>{{bookStats.reserved}}</h3>
+          <p>Reserved Books</p>
+        </div>
+      </div>
+      <div class="stats-card returned">
+        <i class="pi pi-check-circle"></i>
+        <div class="stats-content">
+          <h3>{{bookStats.returned}}</h3>
+          <p>Returned Books</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Main Content Grid -->
+    <div class="dashboard-grid">
+      <!-- Recent Books Section -->
+      <div class="dashboard-card recent-books">
+        <div class="card-header">
+          <h2>Recent Books</h2>
+          <div *ngIf="RID == 'A'">
+            <button pButton routerLink="/LibraryHub/Admin/Books" label="View All" icon="pi pi-arrow-right" class="p-button-text"></button>
+          </div>
+          <div *ngIf="RID == 'U'">
+            <button pButton routerLink="/LibraryHub/User/Books" label="View All" icon="pi pi-arrow-right" class="p-button-text"></button>
+          </div>
+        </div>
+        <div class="books-list">
+          <div *ngFor="let book of recentBooks" class="book-item">
+            <img [src]="book.coverUrl" [alt]="book.title" class="book-cover">
+            <div class="book-details">
+              <h3>{{book.title}}</h3>
+              <p class="author">{{book.author}}</p>
+              <div class="book-status">
+                <span [class]="'status-badge ' + getStatusClass(book.status)">
+                  {{book.status}}
+                </span>
+                <span class="due-date" *ngIf="book.dueDate">
+                  Due: {{formatDueDate(book.dueDate)}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Activity Chart -->
+      <div class="dashboard-card activity-chart">
+        <div class="card-header">
+          <h2>Books Overview</h2>
+        </div>
+        <div class="chart-container">
+          <p-chart type="doughnut" [data]="chartData" [options]="chartOptions"></p-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+  

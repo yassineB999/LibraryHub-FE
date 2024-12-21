@@ -1,1 +1,95 @@
-<p>books works!</p>
+<app-navbar></app-navbar>
+
+<div class="books-container">
+  <!-- Header Section -->
+  <div class="books-header">
+    <div class="header-content">
+      <h1>Library Books</h1>
+      <div class="view-toggle">
+        <p-selectButton [options]="[
+          {label: 'All Books', value: 'all'},
+          {label: 'My Borrowed Books', value: 'borrowed'}
+        ]" [(ngModel)]="viewMode" styleClass="view-toggle-buttons"></p-selectButton>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="search-section">
+    <div class="search-container">
+      <span class="p-input-icon-left search-input">
+        <i class="pi pi-search"></i>
+        <input type="text" pInputText [(ngModel)]="searchQuery" 
+               placeholder="Search by title, author, or ISBN...">
+      </span>
+      <p-dropdown [options]="categories" [(ngModel)]="selectedCategory" 
+                 optionLabel="label" optionValue="value"
+                 styleClass="category-dropdown"
+                 placeholder="Select Category"></p-dropdown>
+    </div>
+  </div>
+
+  <!-- Books Grid -->
+  <div class="books-grid">
+    <div *ngFor="let book of filteredBooks" class="book-card">
+      <div class="book-cover">
+        <img [src]="book.imageUrl" [alt]="book.title">
+        <div class="book-status" [ngClass]="getBookStatus(book)">
+          {{getBookStatus(book)}}
+        </div>
+      </div>
+      <div class="book-info">
+        <h3>{{book.title}}</h3>
+        <p class="author">by {{book.author}}</p>
+        <div class="book-details">
+          <p class="isbn">ISBN: {{book.isbn}}</p>
+          <p class="year">Published: {{book.publicationYear}}</p>
+          <div class="themes">
+            <span *ngFor="let theme of book.themes" class="theme-tag">
+              {{theme.name}}
+            </span>
+          </div>
+        </div>
+        
+        <div class="book-actions">
+          <ng-container [ngSwitch]="getBookStatus(book)">
+            <ng-container *ngSwitchCase="'available'">
+              <button pButton label="Borrow" icon="pi pi-book" 
+                      class="p-button-raised" 
+                      (click)="borrowBook(book)"></button>
+            </ng-container>
+            
+            <ng-container *ngSwitchCase="'borrowed'">
+              <div class="due-date" *ngIf="book.dueDate">
+                Due: {{book.dueDate | date}}
+              </div>
+              <button pButton label="Return" icon="pi pi-reply" 
+                      class="p-button-raised p-button-warning" 
+                      (click)="returnBook(book)"></button>
+            </ng-container>
+            
+            <ng-container *ngSwitchCase="'reserved'">
+              <button pButton label="Cancel Reservation" icon="pi pi-times" 
+                      class="p-button-raised p-button-danger" 
+                      (click)="cancelReservation(book)"></button>
+            </ng-container>
+
+            <ng-container *ngSwitchDefault>
+              <button pButton label="Reserve" icon="pi pi-bookmark" 
+                      class="p-button-raised p-button-secondary" 
+                      [disabled]="book.isAvailable"
+                      (click)="reserveBook(book)"></button>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="filteredBooks.length === 0" class="empty-state">
+    <i class="pi pi-search" style="font-size: 3rem"></i>
+    <h2>No books found</h2>
+    <p>Try adjusting your search or filters to find what you're looking for.</p>
+  </div>
+</div>

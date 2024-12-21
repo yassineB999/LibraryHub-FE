@@ -5,11 +5,11 @@ import { isPlatformBrowser } from '@angular/common';
 import { KeycloakService } from 'keycloak-angular';
 
 @Component({
-  selector: 'app-home-page',
-  templateUrl: './home-page.component.html',
-  styleUrls: ['./home-page.component.css']
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
-export class HomePageComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, OnDestroy {
   menuItems: MenuItem[] = [];
   selectedCategory: string = 'all';
   categories = ['All', 'Fiction', 'Non-Fiction', 'Science', 'History'];
@@ -131,7 +131,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   async login() {
     try {
       await this.keycloak.login({
-        redirectUri: window.location.origin + '/LibraryHub/User/Books'
+        redirectUri: window.location.origin + '/LibraryHub/User/Dashboard'
       });
     } catch (error) {
       console.error('Login failed:', error);

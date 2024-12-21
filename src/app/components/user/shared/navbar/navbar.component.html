@@ -1,0 +1,41 @@
+<div class="navbar-container" [class.mobile-view]="isMobileView">
+    <div class="navbar-content">
+      <!-- Logo and Brand -->
+      <div class="navbar-brand">
+        <a routerLink="/" class="brand-link">
+          <i class="pi pi-book"></i>
+          <span>LibraryHub</span>
+        </a>
+      </div>
+  
+      <!-- Mobile Menu Toggle -->
+      <button *ngIf="isMobileView" 
+              class="mobile-menu-toggle" 
+              (click)="toggleMenu()"
+              [class.active]="isMenuVisible">
+        <i class="pi" [ngClass]="{'pi-bars': !isMenuVisible, 'pi-times': isMenuVisible}"></i>
+      </button>
+  
+      <!-- Navigation Menu -->
+      <nav class="navbar-menu" [class.active]="isMenuVisible || !isMobileView">
+        <p-menubar [model]="menuItems" styleClass="navbar-menubar">
+          <ng-template pTemplate="end">
+            <div class="user-menu-container" *ngIf="username">
+              <p-menu #userMenu [model]="userMenuItems" [popup]="true" appendTo="body"></p-menu>
+              <button 
+                pButton 
+                type="button" 
+                (click)="userMenu.toggle($event)" 
+                class="p-button-text user-profile-button"
+              >
+                <i class="pi pi-user"></i>
+                <span class="username">{{username}}</span>
+                <i class="pi pi-angle-down"></i>
+              </button>
+            </div>
+          </ng-template>
+        </p-menubar>
+      </nav>
+    </div>
+  </div>
+  

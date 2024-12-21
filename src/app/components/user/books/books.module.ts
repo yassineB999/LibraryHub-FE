@@ -1,9 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { BooksRoutingModule } from './books-routing.module';
+import { FormsModule } from '@angular/forms';
 import { BooksComponent } from './books.component';
+import { NavbarModule } from '../shared/navbar/navbar.module';
+import { BooksRoutingModule } from './books-routing.module';
 
+// PrimeNG Modules
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { SelectButtonModule } from 'primeng/selectbutton';
 
 @NgModule({
   declarations: [
@@ -11,7 +17,13 @@ import { BooksComponent } from './books.component';
   ],
   imports: [
     CommonModule,
-    BooksRoutingModule
+    FormsModule,
+    BooksRoutingModule,
+    NavbarModule,
+    ButtonModule,
+    InputTextModule,
+    DropdownModule,
+    SelectButtonModule
   ]
 })
 export class BooksModule { }

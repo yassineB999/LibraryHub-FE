@@ -3,15 +3,17 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { KeycloakService, KeycloakBearerInterceptor } from 'keycloak-angular';
+import { KeycloakService } from 'keycloak-angular';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { initializeKeycloak } from './init/keycloak-init.factory';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { PLATFORM_ID } from '@angular/core';
+import { NavbarModule } from './components/user/shared/navbar/navbar.module';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [BrowserModule, AppRoutingModule, NavbarModule],
   providers: [
     provideAnimationsAsync(),
     KeycloakService,
@@ -23,11 +25,11 @@ import { PLATFORM_ID } from '@angular/core';
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: KeycloakBearerInterceptor,
+      useClass: AuthInterceptor,
       multi: true,
     },
-    provideHttpClient(withInterceptorsFromDi()), // Use interceptors from DI
+    provideHttpClient(withInterceptorsFromDi()),
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }
