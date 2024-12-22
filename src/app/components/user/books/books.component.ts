@@ -1,22 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
+import { Component, OnInit, HostListener } from '@angular/core';
+import { ArchiveBooksService } from '../../../services/archive-books.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-interface Theme {
-  id: number;
-  name: string;
-}
-
-interface Book {
-  idBook: number;
-  title: string;
-  author: string;
-  isbn: string;
-  publicationYear: number;
-  isAvailable: boolean;
-  themes: Theme[];
-  imageUrl?: string;
-  status?: 'available' | 'borrowed' | 'reserved';
-  dueDate?: Date;
+interface Category {
+  label: string;
+  value: string;
 }
 
 @Component({
@@ -25,145 +14,182 @@ interface Book {
   styleUrls: ['./books.component.css']
 })
 export class BooksComponent implements OnInit {
-  username: string = '';
+  books: any[] = [];
+  filteredBooks: any[] = [];
+  currentPage = 1;
+  loading = false;
+  totalBooks = 0;
+  viewMode: 'all' | 'borrowed' = 'all';
   searchQuery: string = '';
   selectedCategory: string = 'all';
-  viewMode: 'all' | 'borrowed' = 'all';
-  categories: { label: string; value: string }[] = [];
-  books: Book[] = [];
-  filteredBooks: Book[] = [];
+  private searchSubject = new Subject<string>();
+  
+  categories: Category[] = [
+    { label: 'All Categories', value: 'all' },
+    { label: 'Fiction', value: 'fiction' },
+    { label: 'Non-Fiction', value: 'non-fiction' },
+    { label: 'Science', value: 'science' },
+    { label: 'History', value: 'history' },
+    { label: 'Technology', value: 'technology' }
+  ];
 
-  constructor(private keycloak: KeycloakService) {}
+  constructor(private archiveBooksService: ArchiveBooksService) {
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(() => {
+      this.resetAndSearch();
+    });
+  }
 
-  async ngOnInit() {
-    try {
-      // Load user profile
-      const userProfile = await this.keycloak.loadUserProfile();
-      this.username = userProfile.firstName || userProfile.username || '';
+  ngOnInit(): void {
+    this.loadBooks();
+    this.loadTotalBooks();
+  }
 
-      // Load sample data (replace with API call)
-      this.loadSampleData();
-      
-      // Initialize categories
-      this.initializeCategories();
-      
-      // Initial filtering
-      this.updateFilteredBooks();
-    } catch (error) {
-      console.error('Error initializing books component:', error);
+  @HostListener('window:scroll', ['$event'])
+  onScroll(): void {
+    if (this.loading || !this.hasMoreBooks()) return;
+
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+    if (windowHeight + scrollTop >= documentHeight - 100) {
+      this.loadMore();
     }
   }
 
-  private loadSampleData() {
-    this.books = [
-      {
-        idBook: 1,
-        title: 'The Great Gatsby',
-        author: 'F. Scott Fitzgerald',
-        isbn: '978-0743273565',
-        publicationYear: 1925,
-        isAvailable: true,
-        themes: [{ id: 1, name: 'Fiction' }, { id: 2, name: 'Classic' }],
-        imageUrl: 'https://covers.openlibrary.org/b/id/11983442-M.jpg',
-        status: 'available'
+  onSearch(): void {
+    this.searchSubject.next(this.searchQuery);
+  }
+
+  onCategoryChange(): void {
+    this.resetAndSearch();
+  }
+
+  private resetAndSearch(): void {
+    this.currentPage = 1;
+    this.books = [];
+    this.loadBooks();
+    this.loadTotalBooks();
+  }
+
+  loadBooks(): void {
+    this.loading = true;
+    this.archiveBooksService.getBooks(
+      this.currentPage,
+      this.searchQuery,
+      this.selectedCategory
+    ).subscribe({
+      next: (books) => {
+        this.books = books.map(book => ({
+          ...book,
+          isAvailable: true,
+          status: 'available',
+          themes: this.extractThemes(book.subject)
+        }));
+        this.filterBooks();
+        this.loading = false;
       },
-      {
-        idBook: 2,
-        title: '1984',
-        author: 'George Orwell',
-        isbn: '978-0451524935',
-        publicationYear: 1949,
-        isAvailable: false,
-        themes: [{ id: 3, name: 'Science Fiction' }, { id: 4, name: 'Dystopian' }],
-        imageUrl: 'https://covers.openlibrary.org/b/id/9269962-M.jpg',
-        status: 'borrowed',
-        dueDate: new Date('2024-01-10')
-      },
-      {
-        idBook: 3,
-        title: 'To Kill a Mockingbird',
-        author: 'Harper Lee',
-        isbn: '978-0446310789',
-        publicationYear: 1960,
-        isAvailable: false,
-        themes: [{ id: 1, name: 'Fiction' }, { id: 5, name: 'Literary' }],
-        imageUrl: 'https://covers.openlibrary.org/b/id/679461-M.jpg',
-        status: 'reserved'
+      error: (error) => {
+        console.error('Error loading books:', error);
+        this.loading = false;
       }
-    ];
-  }
-
-  private initializeCategories() {
-    const uniqueThemes = new Set<string>();
-    this.books.forEach(book => {
-      book.themes.forEach(theme => uniqueThemes.add(theme.name));
     });
-    
-    this.categories = [
-      { label: 'All Categories', value: 'all' },
-      ...Array.from(uniqueThemes).map(theme => ({
-        label: theme,
-        value: theme.toLowerCase()
-      }))
-    ];
   }
 
-  updateFilteredBooks() {
+  private loadTotalBooks(): void {
+    this.archiveBooksService.getTotalBooks(
+      this.searchQuery,
+      this.selectedCategory
+    ).subscribe({
+      next: (total) => {
+        this.totalBooks = total;
+      },
+      error: (error) => {
+        console.error('Error loading total books count:', error);
+      }
+    });
+  }
+
+  private extractThemes(subjects: string): { name: string }[] {
+    if (!subjects) return [];
+    return subjects.split(', ')
+      .slice(0, 3)
+      .map(subject => ({ name: subject }));
+  }
+
+  filterBooks(): void {
     this.filteredBooks = this.books.filter(book => {
-      const matchesSearch = !this.searchQuery || 
-        book.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        book.author.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        book.isbn.includes(this.searchQuery);
-      
-      const matchesCategory = this.selectedCategory === 'all' || 
-        book.themes.some(theme => theme.name.toLowerCase() === this.selectedCategory);
+      if (!book) return false;
       
       const matchesView = this.viewMode === 'all' || 
         (this.viewMode === 'borrowed' && book.status === 'borrowed');
       
-      return matchesSearch && matchesCategory && matchesView;
+      return matchesView;
     });
   }
 
-  onSearchChange() {
-    this.updateFilteredBooks();
+  getBookStatus(book: any): string {
+    return book.status || 'available';
   }
 
-  onCategoryChange() {
-    this.updateFilteredBooks();
+  borrowBook(book: any): void {
+    book.status = 'borrowed';
+    book.isAvailable = false;
+    book.dueDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000); // 14 days from now
+    this.filterBooks();
   }
 
-  onViewModeChange() {
-    this.updateFilteredBooks();
+  returnBook(book: any): void {
+    book.status = 'available';
+    book.isAvailable = true;
+    book.dueDate = null;
+    this.filterBooks();
   }
 
-  borrowBook(book: Book) {
-    if (!book.isAvailable) {
-      return;
-    }
-    // TODO: Implement API call to borrow book
-    console.log('Borrowing book:', book.title);
+  reserveBook(book: any): void {
+    book.status = 'reserved';
+    this.filterBooks();
   }
 
-  reserveBook(book: Book) {
-    if (book.isAvailable) {
-      return;
-    }
-    // TODO: Implement API call to reserve book
-    console.log('Reserving book:', book.title);
+  cancelReservation(book: any): void {
+    book.status = 'available';
+    book.isAvailable = true;
+    this.filterBooks();
   }
 
-  returnBook(book: Book) {
-    // TODO: Implement API call to return book
-    console.log('Returning book:', book.title);
+  loadMore(): void {
+    if (this.loading) return;
+    
+    this.currentPage++;
+    this.loading = true;
+    this.archiveBooksService.getBooks(
+      this.currentPage,
+      this.searchQuery,
+      this.selectedCategory
+    ).subscribe({
+      next: (newBooks) => {
+        const mappedBooks = newBooks.map(book => ({
+          ...book,
+          isAvailable: true,
+          status: 'available',
+          themes: this.extractThemes(book.subject)
+        }));
+        this.books = [...this.books, ...mappedBooks];
+        this.filterBooks();
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading more books:', error);
+        this.loading = false;
+        this.currentPage--; // Revert page increment on error
+      }
+    });
   }
 
-  cancelReservation(book: Book) {
-    // TODO: Implement API call to cancel reservation
-    console.log('Canceling reservation for:', book.title);
-  }
-
-  getBookStatus(book: Book): 'available' | 'borrowed' | 'reserved' {
-    return book.status || (book.isAvailable ? 'available' : 'borrowed');
+  hasMoreBooks(): boolean {
+    return this.books.length < this.totalBooks;
   }
 }

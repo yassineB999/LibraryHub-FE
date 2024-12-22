@@ -60,4 +60,5 @@ export class BorrowsService {
   deleteBorrow(deleteBorrowDTO: DeleteBorrowDTO): Observable<Borrow | string> {
     return this.http.delete<Borrow | string>(`${this.apiUrl}/delete`, { body: deleteBorrowDTO });
   }
+
 }

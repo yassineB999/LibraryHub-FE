@@ -10,6 +10,9 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { TableModule } from 'primeng/table';
+import { PaginatorModule } from 'primeng/paginator';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @NgModule({
   declarations: [
@@ -23,7 +26,10 @@ import { SelectButtonModule } from 'primeng/selectbutton';
     ButtonModule,
     InputTextModule,
     DropdownModule,
-    SelectButtonModule
+    SelectButtonModule,
+    TableModule,
+    PaginatorModule,
+    ProgressSpinnerModule
   ]
 })
 export class BooksModule { }
