@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { 
-  Book, 
+  DataBookDTO,
   CreateBookDTO, 
   UpdateBookDTO, 
   UpdateBookAvailabilityDTO,
@@ -12,6 +12,7 @@ import {
   DeleteBookDTO,
   DeleteThemeFromBookDTO 
 } from '../../models/book.model';
+
 import { KeycloakService } from 'keycloak-angular';
 
 @Injectable({
@@ -23,67 +24,84 @@ export class BooksService {
   constructor(private http: HttpClient) { }
 
   // Get all books
-  getBooks(): Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.apiUrl}`);
+  getBooks(): Observable<DataBookDTO[]> {
+    return this.http.get<DataBookDTO[]>(`${this.apiUrl}`);
+  }
+
+  // Get all books by pagination
+  getBooksByPagination(page: number, size: number, search?: string, category?: string): Observable<any> {
+    let url = `${this.apiUrl}/${page}/${size}`;
+    if (search) {
+      this.getSearchedBooks(search);
+    }
+    if (category) {
+      url += `&category=${encodeURIComponent(category)}`;
+    }
+    return this.http.get<any>(url);
+  }
+
+  // Get searched books
+  getSearchedBooks(search: string): Observable<DataBookDTO[]> {
+    return this.http.get<DataBookDTO[]>(`${this.apiUrl}/search?title=${search}`);
   }
 
   // Get available books (Admin only)
-  getAvailableBooks(): Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.apiUrl}/available`);
+  getAvailableBooks(): Observable<DataBookDTO[]> {
+    return this.http.get<DataBookDTO[]>(`${this.apiUrl}/available`);
   }
 
   // Get unavailable books (Admin only)
-  getUnavailableBooks(): Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.apiUrl}/unavailable`);
+  getUnavailableBooks(): Observable<DataBookDTO[]> {
+    return this.http.get<DataBookDTO[]>(`${this.apiUrl}/unavailable`);
   }
 
   // Get book by ID
-  getBookById(idBook: number): Observable<Book> {
-    return this.http.get<Book>(`${this.apiUrl}/${idBook}`);
+  getBookById(idBook: number): Observable<DataBookDTO> {
+    return this.http.get<DataBookDTO>(`${this.apiUrl}/${idBook}`);
   }
 
   // Get all deleted books (Admin only)
-  getDeletedBooks(): Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.apiUrl}/deletedBooks`);
+  getDeletedBooks(): Observable<DataBookDTO[]> {
+    return this.http.get<DataBookDTO[]>(`${this.apiUrl}/deletedBooks`);
   }
 
   // Get deleted book by ID (Admin only)
-  getDeletedBookById(idBook: number): Observable<Book> {
-    return this.http.get<Book>(`${this.apiUrl}/deletedBooks/${idBook}`);
+  getDeletedBookById(idBook: number): Observable<DataBookDTO> {
+    return this.http.get<DataBookDTO>(`${this.apiUrl}/deletedBooks/${idBook}`);
   }
 
   // Create new book (Admin only)
-  createBook(createBookDTO: CreateBookDTO): Observable<Book | string> {
-    return this.http.post<Book | string>(`${this.apiUrl}/create`, createBookDTO);
+  createBook(createBookDTO: CreateBookDTO): Observable<DataBookDTO | string> {
+    return this.http.post<DataBookDTO | string>(`${this.apiUrl}/create`, createBookDTO);
   }
 
   // Update book (Admin only)
-  updateBook(updateBookDTO: UpdateBookDTO): Observable<Book | string> {
-    return this.http.put<Book | string>(`${this.apiUrl}/update`, updateBookDTO);
+  updateBook(updateBookDTO: UpdateBookDTO): Observable<DataBookDTO | string> {
+    return this.http.put<DataBookDTO | string>(`${this.apiUrl}/update`, updateBookDTO);
   }
 
   // Update book availability
-  updateBookAvailability(updateBookAvailabilityDTO: UpdateBookAvailabilityDTO): Observable<Book | string> {
-    return this.http.put<Book | string>(`${this.apiUrl}/update/availability`, updateBookAvailabilityDTO);
+  updateBookAvailability(updateBookAvailabilityDTO: UpdateBookAvailabilityDTO): Observable<DataBookDTO | string> {
+    return this.http.put<DataBookDTO | string>(`${this.apiUrl}/update/availability`, updateBookAvailabilityDTO);
   }
 
   // Add theme to book (Admin only)
-  addThemeToBook(addThemeToBookDTO: AddThemeToBookDTO): Observable<Book | string> {
-    return this.http.put<Book | string>(`${this.apiUrl}/update/addThemeToBook`, addThemeToBookDTO);
+  addThemeToBook(addThemeToBookDTO: AddThemeToBookDTO): Observable<DataBookDTO | string> {
+    return this.http.put<DataBookDTO | string>(`${this.apiUrl}/update/addThemeToBook`, addThemeToBookDTO);
   }
 
   // Recover deleted book (Admin only)
-  recoverBook(recoverBookDTO: RecoverBookDTO): Observable<Book | string> {
-    return this.http.put<Book | string>(`${this.apiUrl}/recover`, recoverBookDTO);
+  recoverBook(recoverBookDTO: RecoverBookDTO): Observable<DataBookDTO | string> {
+    return this.http.put<DataBookDTO | string>(`${this.apiUrl}/recover`, recoverBookDTO);
   }
 
   // Delete book (Admin only)
-  deleteBook(deleteBookDTO: DeleteBookDTO): Observable<Book | string> {
-    return this.http.delete<Book | string>(`${this.apiUrl}/delete`, { body: deleteBookDTO });
+  deleteBook(deleteBookDTO: DeleteBookDTO): Observable<DataBookDTO | string> {
+    return this.http.delete<DataBookDTO | string>(`${this.apiUrl}/delete`, { body: deleteBookDTO });
   }
 
   // Delete theme from book (Admin only)
-  deleteThemeFromBook(deleteThemeFromBookDTO: DeleteThemeFromBookDTO): Observable<Book | string> {
-    return this.http.delete<Book | string>(`${this.apiUrl}/delete/deleteThemeFromBook`, { body: deleteThemeFromBookDTO });
+  deleteThemeFromBook(deleteThemeFromBookDTO: DeleteThemeFromBookDTO): Observable<DataBookDTO | string> {
+    return this.http.delete<DataBookDTO | string>(`${this.apiUrl}/delete/deleteThemeFromBook`, { body: deleteThemeFromBookDTO });
   }
 }

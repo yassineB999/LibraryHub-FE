@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
+import { Borrow, CreateBorrowDTO } from '../../models/borrow.model';
+import { BorrowsService } from '../api/borrows.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +11,7 @@ import { environment } from '../../environments/environment';
 export class UserService {
   private apiUrl = `${environment.apiUrl}/users`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private borrowsService: BorrowsService) { }
 
   getCurrentUser(): Observable<any> {
     return this.http.get(`${this.apiUrl}/me`);
@@ -19,20 +21,14 @@ export class UserService {
     return this.http.put(`${this.apiUrl}/profile`, userData);
   }
 
-  getBorrowedBooks(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/borrowed-books`);
+  // Borrow a book
+  borrowBook(createBookDTO :CreateBorrowDTO): Observable<Borrow | string> {
+    return this.borrowsService.createBorrow(createBookDTO);
   }
 
-  getReservations(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/reservations`);
-  }
-
-  borrowBook(bookId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/borrow/${bookId}`, {});
-  }
-
-  returnBook(bookId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/return/${bookId}`, {});
+  // Get user's borrowed books
+  getMyBorrows(): Observable<Borrow[]> {
+    return this.borrowsService.getMyBorrows();
   }
 
   reserveBook(bookId: string): Observable<any> {

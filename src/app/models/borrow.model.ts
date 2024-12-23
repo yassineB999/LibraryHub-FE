@@ -26,7 +26,8 @@ export interface GetBorrowByIdDTO {
 
 export interface CreateBorrowDTO {
     idBook: number;
-    idUser?: string; // This will be set by the service using the authenticated user
+    returnDate: string;
+    idUser: string; // This will be set by the service using the authenticated user
 }
 
 export interface UpdateBorrowDTO {

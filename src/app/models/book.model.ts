@@ -1,24 +1,36 @@
-export interface Book {
-    id?: number;
-    title: string;
-    author: string;
-    description: string;
-    isAvailable: boolean;
-    isDeleted: boolean;
-    themes?: string[];
+// Theme DTO
+export interface DataThemeDTO {
+    idTheme: number;
+    name: string;
 }
 
+// Book DTO
+export interface DataBookDTO {
+    idBook: number;
+    title: string;
+    author: string | string[];
+    isbn: string;
+    imageUrl: string;
+    publicationYear: number;
+    isAvailable: boolean;
+    themes: DataThemeDTO[];
+}
+
+// DTOs for Book Operations
 export interface CreateBookDTO {
     title: string;
     author: string;
-    description: string;
+    isbn: string;
+    publicationYear: number;
+    themes: number[];
 }
 
 export interface UpdateBookDTO {
     idBook: number;
-    title?: string;
-    author?: string;
-    description?: string;
+    title: string;
+    author: string;
+    isbn: string;
+    publicationYear: number;
 }
 
 export interface UpdateBookAvailabilityDTO {
@@ -28,7 +40,7 @@ export interface UpdateBookAvailabilityDTO {
 
 export interface AddThemeToBookDTO {
     idBook: number;
-    themeName: string;
+    idTheme: number;
 }
 
 export interface RecoverBookDTO {
@@ -41,5 +53,5 @@ export interface DeleteBookDTO {
 
 export interface DeleteThemeFromBookDTO {
     idBook: number;
-    themeName: string;
+    idTheme: number;
 }

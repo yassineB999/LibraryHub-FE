@@ -10,7 +10,7 @@
           {label: 'All Books', value: 'all'},
           {label: 'My Borrowed Books', value: 'borrowed'}
         ]" [(ngModel)]="viewMode" styleClass="view-toggle-buttons"
-        (onChange)="filterBooks()"></p-selectButton>
+        (onChange)="onViewModeChange()"></p-selectButton>
       </div>
     </div>
   </div>
@@ -34,65 +34,59 @@
 
   <!-- Books Grid -->
   <div class="books-grid">
-    <div *ngFor="let book of filteredBooks" class="book-card">
+    <div *ngFor="let book of books" class="book-card p-shadow-2">
       <div class="book-cover">
-        <img [src]="book.imageUrl" [alt]="book.title"
-             onerror="this.src='assets/images/book-placeholder.jpg'">
+        <img [src]="book.imageUrl" [alt]="book.title" (error)="book.imageUrl = 'assets/images/default-book.jpg'">
         <div class="book-status" [ngClass]="getBookStatus(book)">
           {{getBookStatus(book)}}
         </div>
       </div>
       <div class="book-info">
-        <h3>{{book.title}}</h3>
-        <p class="author">by {{book.creator}}</p>
+        <h3 class="book-title">{{book.title}}</h3>
+        <p class="author">by {{formatAuthors(book.author)}}</p>
         <div class="book-details">
-          <p class="year">Published: {{book.year}}</p>
-          <p class="publisher">Publisher: {{book.publisher}}</p>
-          <p class="language">Language: {{book.language}}</p>
-          <div class="themes">
-            <span *ngFor="let theme of book.themes" class="theme-tag">
-              {{theme.name}}
-            </span>
-          </div>
+          <p class="year"><i class="pi pi-calendar"></i> {{book.publicationYear}}</p>
+          <p class="isbn" *ngIf="book.isbn"><i class="pi pi-id-card"></i> {{book.isbn}}</p>
         </div>
-        
+        <div class="themes-container">
+          <p-chip *ngFor="let theme of book.themes.slice(0, 3)" 
+                 [label]="theme.name"
+                 styleClass="theme-chip">
+          </p-chip>
+          <span *ngIf="book.themes.length > 3" class="more-themes">
+            +{{book.themes.length - 3}} more
+          </span>
+        </div>
         <div class="book-actions">
-          <ng-container [ngSwitch]="getBookStatus(book)">
-            <ng-container *ngSwitchCase="'available'">
-              <button pButton label="Borrow" icon="pi pi-book" 
-                      class="p-button-raised" 
-                      (click)="borrowBook(book)"></button>
-            </ng-container>
-            
-            <ng-container *ngSwitchCase="'borrowed'">
-              <div class="due-date" *ngIf="book.dueDate">
-                Due: {{book.dueDate | date}}
-              </div>
-              <button pButton label="Return" icon="pi pi-reply" 
-                      class="p-button-raised p-button-warning" 
-                      (click)="returnBook(book)"></button>
-            </ng-container>
-            
-            <ng-container *ngSwitchCase="'reserved'">
-              <button pButton label="Cancel Reservation" icon="pi pi-times" 
-                      class="p-button-raised p-button-danger" 
-                      (click)="cancelReservation(book)"></button>
-            </ng-container>
-
-            <ng-container *ngSwitchDefault>
-              <button pButton label="Reserve" icon="pi pi-bookmark" 
-                      class="p-button-raised p-button-secondary" 
-                      [disabled]="book.isAvailable"
-                      (click)="reserveBook(book)"></button>
-            </ng-container>
-          </ng-container>
+          <p-button *ngIf="book.isAvailable" 
+                   icon="pi pi-book" 
+                   label="Borrow"
+                   styleClass="p-button-success"
+                   (onClick)="showBorrowDialog(book)">
+          </p-button>
+          <p-button *ngIf="!book.isAvailable" 
+                   icon="pi pi-clock" 
+                   label="Reserve"
+                   styleClass="p-button-secondary"
+                   (onClick)="reserveBook(book)">
+          </p-button>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Pagination -->
+  <div class="pagination-container">
+    <p-paginator [rows]="10" 
+                 [totalRecords]="totalElements" 
+                 [rowsPerPageOptions]="[10, 20, 30]"
+                 (onPageChange)="onPageChange($event)"
+                 styleClass="custom-paginator">
+    </p-paginator>
+  </div>
+
   <!-- Empty State -->
-  <div *ngIf="!loading && filteredBooks.length === 0" class="empty-state">
+  <div *ngIf="!loading && books.length === 0" class="empty-state">
     <i class="pi pi-search" style="font-size: 3rem"></i>
     <h2>No books found</h2>
     <p>Try adjusting your search or filters to find what you're looking for.</p>
@@ -104,3 +98,29 @@
     </p-progressSpinner>
   </div>
 </div>
+
+<!-- Borrow Dialog -->
+<p-dialog [(visible)]="displayBorrowDialog" 
+          [style]="{width: '450px'}" 
+          header="Borrow Book" 
+          [modal]="true"
+          [draggable]="false"
+          [resizable]="false">
+    <div class="p-fluid">
+        <div class="field">
+            <label for="returnDate">Return Date</label>
+            <p-calendar [(ngModel)]="returnDate"
+                      [minDate]="minReturnDate"
+                      [showIcon]="true"
+                      dateFormat="dd/mm/yy"
+                      inputId="returnDate"
+                      [style]="{'width':'100%'}"
+                      [readonlyInput]="true">
+            </p-calendar>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-times" (click)="displayBorrowDialog=false" label="Cancel" styleClass="p-button-text"></p-button>
+        <p-button icon="pi pi-check" (click)="confirmBorrow()" label="Confirm" styleClass="p-button-success"></p-button>
+    </ng-template>
+</p-dialog>

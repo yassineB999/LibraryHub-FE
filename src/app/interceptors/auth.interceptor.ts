@@ -17,14 +17,12 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // Check if user is logged in
     if (!this.keycloak.isLoggedIn()) {
-      console.log('User is not logged in');
       return next.handle(request);
     }
 
     // Get token
     return from(this.keycloak.getToken()).pipe(
       switchMap(token => {
-        console.log('Got token:', token ? 'yes' : 'no');
         
         if (token) {
           const authRequest = request.clone({
@@ -34,10 +32,6 @@ export class AuthInterceptor implements HttpInterceptor {
               'Content-Type': 'application/json'
             }
           });
-          
-          console.log('Making request to:', request.url);
-          console.log('With headers:', authRequest.headers.keys());
-          
           return next.handle(authRequest);
         }
         return next.handle(request);

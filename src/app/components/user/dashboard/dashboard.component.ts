@@ -91,28 +91,6 @@ export class DashboardComponent implements OnInit {
       const token = await this.keycloak.getToken();
       console.log('Token available:', token ? 'yes' : 'no');
 
-      // Try to get books
-      this.booksService.getBooks().subscribe({
-        next: (books) => {
-          console.log('Books received:', books);
-        },
-        error: (error) => {
-          console.error('Error fetching books:', error);
-          if (error.status === 401) {
-            console.log('Token expired, trying to refresh...');
-            this.keycloak.updateToken(20).then(() => {
-              // Retry the request after token refresh
-              this.booksService.getBooks().subscribe(books => {
-                console.log('Books received after token refresh:', books);
-              });
-            }).catch(() => {
-              console.log('Token refresh failed, redirecting to login');
-              this.keycloak.login();
-            });
-          }
-        }
-      });
-
       this.initChartData();
     } catch (error) {
       console.error('Error in ngOnInit:', error);

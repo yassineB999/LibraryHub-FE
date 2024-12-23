@@ -13,6 +13,9 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { TableModule } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ChipModule } from 'primeng/chip';
+import { DialogModule } from 'primeng/dialog';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
   declarations: [
@@ -29,7 +32,10 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     SelectButtonModule,
     TableModule,
     PaginatorModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    ChipModule,
+    DialogModule,
+    CalendarModule
   ]
 })
 export class BooksModule { }

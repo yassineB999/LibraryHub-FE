@@ -26,6 +26,10 @@ export class BorrowsService {
     return this.http.get<Borrow[]>(`${this.apiUrl}`);
   }
 
+  getBorrowBookAvailability(isbn: string): Observable<Boolean> {
+    return this.http.get<Boolean>(`${this.apiUrl}/borrowedBook/${isbn}`);
+  }
+
   // Get user's borrows
   getMyBorrows(): Observable<Borrow[]> {
     return this.http.get<Borrow[]>(`${this.apiUrl}/myBorrows`);
