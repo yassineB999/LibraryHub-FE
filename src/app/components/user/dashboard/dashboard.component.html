@@ -77,3 +77,85 @@
     </div>
   </div>
   
+
+  <!-- Role Selection Dialog -->
+<p-dialog 
+    [(visible)]="showRoleDialog" 
+    [modal]="true" 
+    [closable]="false"
+    [style]="{width: '850px'}"
+    styleClass="role-dialog">
+    <div class="role-selection-content">
+        <div class="header-text">
+            <div class="header-bg"></div>
+            <div class="header-content">
+                <h2>Welcome to LibraryHub</h2>
+                <p>Choose your role to personalize your experience</p>
+            </div>
+        </div>
+        <div class="role-cards-container">
+            <div class="role-cards">
+                <div class="role-card" [class.selected]="selectedRole === 'ROLE_STUDENT'" (click)="selectRole('ROLE_STUDENT')">
+                    <div class="card-content">
+                        <div class="icon-wrapper">
+                            <i class="pi pi-book"></i>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <h3>Student</h3>
+                        <div class="features-list">
+                            <div class="feature">
+                                <i class="pi pi-check-circle"></i>
+                                <span>Access digital library resources</span>
+                            </div>
+                            <div class="feature">
+                                <i class="pi pi-check-circle"></i>
+                                <span>Track your reading progress</span>
+                            </div>
+                            <div class="feature">
+                                <i class="pi pi-check-circle"></i>
+                                <span>Join reading groups</span>
+                            </div>
+                        </div>
+                        <button pButton 
+                            label="Continue as Student" 
+                            icon="pi pi-arrow-right" 
+                            iconPos="right"
+                            [class]="selectedRole === 'ROLE_STUDENT' ? 'p-button-primary' : 'p-button-outlined'">
+                        </button>
+                    </div>
+                    <div class="card-bg"></div>
+                </div>
+                <div class="role-card" [class.selected]="selectedRole === 'ROLE_TEACHER'" (click)="selectRole('ROLE_TEACHER')">
+                    <div class="card-content">
+                        <div class="icon-wrapper teacher">
+                            <i class="pi pi-user-edit"></i>
+                            <div class="icon-glow"></div>
+                        </div>
+                        <h3>Teacher</h3>
+                        <div class="features-list">
+                            <div class="feature">
+                                <i class="pi pi-check-circle"></i>
+                                <span>Create reading lists</span>
+                            </div>
+                            <div class="feature">
+                                <i class="pi pi-check-circle"></i>
+                                <span>Monitor student progress</span>
+                            </div>
+                            <div class="feature">
+                                <i class="pi pi-check-circle"></i>
+                                <span>Manage library resources</span>
+                            </div>
+                        </div>
+                        <button pButton 
+                            label="Continue as Teacher" 
+                            icon="pi pi-arrow-right" 
+                            iconPos="right"
+                            [class]="selectedRole === 'ROLE_TEACHER' ? 'p-button-primary' : 'p-button-outlined'">
+                        </button>
+                    </div>
+                    <div class="card-bg"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</p-dialog>

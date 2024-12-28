@@ -10,6 +10,8 @@ import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
 import { RippleModule } from 'primeng/ripple';
 
+import { DialogModule } from 'primeng/dialog';
+
 @NgModule({
   declarations: [
     DashboardComponent
@@ -21,7 +23,8 @@ import { RippleModule } from 'primeng/ripple';
     ChartModule,
     CardModule,
     RippleModule,
-    NavbarModule
+    NavbarModule,
+    DialogModule
   ]
 })
 export class DashboardModule { }

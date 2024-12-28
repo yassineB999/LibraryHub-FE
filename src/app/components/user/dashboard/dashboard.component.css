@@ -187,6 +187,245 @@
     justify-content: center;
   }
   
+  /* Role Selection Dialog */
+  :host ::ng-deep .role-dialog {
+    max-height: 90vh;
+    
+    .p-dialog-header {
+      display: none;
+    }
+
+    .p-dialog-content {
+      border-radius: 1.5rem;
+      padding: 0;
+      background: #ffffff;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .role-selection-content {
+    background: transparent;
+    max-height: calc(90vh - 2rem);
+    position: relative;
+  }
+
+  .role-cards {
+    display: flex;
+    gap: 2rem;
+    max-height: calc(90vh - 180px);
+    position: relative;
+    z-index: 1;
+    overflow-y: auto;
+  }
+
+  @media screen and (min-width: 768px) {
+    .role-cards {
+      overflow-y: visible;
+    }
+  }
+
+  .role-cards-container {
+    background: white;
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .role-card {
+    flex: 1;
+    position: relative;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-content {
+    position: relative;
+    z-index: 1;
+    padding: 2.5rem;
+  }
+
+  .card-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #f8faff;
+    transition: all 0.4s ease;
+    border: 2px solid transparent;
+  }
+
+  .role-card:hover {
+    transform: translateY(-8px);
+  }
+
+  .role-card:hover .card-bg {
+    background: #f1f5ff;
+    border-color: #e0e7ff;
+  }
+
+  .role-card.selected .card-bg {
+    background: #e0e7ff;
+    border-color: #6366f1;
+  }
+
+  .icon-wrapper {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 2rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.15);
+  }
+
+  .icon-wrapper.teacher {
+    background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+  }
+
+  .icon-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    border-radius: 50%;
+    filter: blur(20px);
+    opacity: 0.3;
+    transform: scale(0.8);
+    transition: all 0.4s ease;
+  }
+
+  .role-card:hover .icon-glow {
+    opacity: 0.4;
+    transform: scale(1.2);
+  }
+
+  .icon-wrapper i {
+    font-size: 2.5rem;
+    color: white;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+
+  .role-card h3 {
+    color: #1e293b;
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+  }
+
+  .features-list {
+    margin-bottom: 2rem;
+    text-align: left;
+  }
+
+  .feature {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    color: #64748b;
+  }
+
+  .feature i {
+    color: #6366f1;
+    font-size: 1.2rem;
+    background: #e0e7ff;
+    padding: 0.5rem;
+    border-radius: 50%;
+  }
+
+  .role-card.selected .feature i {
+    background: #c7d2fe;
+  }
+
+  .role-card button {
+    width: 100%;
+    padding: 1rem;
+    font-weight: 600;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    border: 2px solid #e0e7ff;
+    color: #6366f1;
+  }
+
+  .role-card button:hover {
+    transform: translateY(-2px);
+    background: #f8faff;
+    border-color: #6366f1;
+  }
+
+  .role-card.selected button {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border: none;
+    color: white;
+  }
+
+  .role-card.selected button:hover {
+    box-shadow: 0 8px 16px rgba(99, 102, 241, 0.15);
+  }
+
+  /* Add decorative elements */
+  .role-cards-container::before,
+  .role-cards-container::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+    z-index: 0;
+  }
+
+  .role-cards-container::before {
+    top: -150px;
+    left: -150px;
+  }
+
+  .role-cards-container::after {
+    bottom: -150px;
+    right: -150px;
+  }
+
+  /* Responsive Design for Role Dialog */
+  @media screen and (max-width: 768px) {
+    .header-content h2 {
+      font-size: 2rem;
+    }
+
+    .role-cards {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .card-content {
+      padding: 1.5rem;
+    }
+
+    .icon-wrapper {
+      width: 70px;
+      height: 70px;
+      margin-bottom: 1.5rem;
+    }
+
+    .role-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature {
+      margin-bottom: 0.75rem;
+    }
+  }
+
   /* Responsive Design */
   @media screen and (max-width: 992px) {
     .dashboard-grid {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { KeycloakService } from 'keycloak-angular';
 import { BooksService } from '../../../service/api/books.service';
+import { UsersService } from '../../../service/api/users.service';
 
 interface BookStats {
   borrowed: number;
@@ -26,6 +27,8 @@ interface RecentBook {
 export class DashboardComponent implements OnInit {
   username: string = '';
   RID: string = 'U';
+  showRoleDialog: boolean = false;
+  selectedRole: string = '';
   bookStats: BookStats = {
     borrowed: 3,
     returned: 5,
@@ -61,7 +64,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private booksService: BooksService,
-    private keycloak: KeycloakService
+    private keycloak: KeycloakService,
+    private usersService: UsersService
   ) {
     this.initChartData();
   }
@@ -75,6 +79,19 @@ export class DashboardComponent implements OnInit {
         await this.keycloak.login();
         return;
       }
+
+      // Check if account exists
+      this.usersService.checkAccountExist().subscribe(
+        (exists) => {
+          console.log('Account exists:', exists);
+          if (!exists) {
+            this.showRoleDialog = true;
+          }
+        },
+        (error) => {
+          console.error('Error checking account:', error);
+        }
+      );
 
       // Load user profile
       const userProfile = await this.keycloak.loadUserProfile();
@@ -93,7 +110,7 @@ export class DashboardComponent implements OnInit {
 
       this.initChartData();
     } catch (error) {
-      console.error('Error in ngOnInit:', error);
+      console.error('Error in dashboard initialization:', error);
     }
   }
 
@@ -154,5 +171,26 @@ export class DashboardComponent implements OnInit {
   formatDueDate(date: Date | undefined): string {
     if (!date) return 'N/A';
     return new Date(date).toLocaleDateString();
+  }
+
+  selectRole(role: string): void {
+    this.selectedRole = role;
+    this.createUser();
+  }
+
+  createUser(): void {
+    this.usersService.createKeyCloakUser(this.selectedRole).subscribe(
+      response => {
+        if (response) { 
+          console.log('User created:', response);
+          this.showRoleDialog = false; 
+          // Optionally, navigate to another page or show a success message
+        }
+      },
+      error => {
+        console.error('Error creating user:', error);
+        // Handle error response (e.g., show an error message)
+      }
+    );
   }
 }

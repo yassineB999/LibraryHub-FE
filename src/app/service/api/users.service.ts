@@ -18,6 +18,15 @@ export class UsersService {
 
   constructor(private http: HttpClient) { }
 
+  
+  checkAccountExist(): Observable<boolean>{
+    return this.http.get<boolean>(`${this.apiUrl}/accountExist`);
+  }
+
+  createKeyCloakUser(selectedRole: string): Observable<User | string>{
+    return this.http.post<User | string>(`${this.apiUrl}/createUserFromKeyCloak`, {userType : selectedRole.replace('ROLE_', '')});
+  }
+
   // Get authenticated user ID
   getAuthenticatedUser(): Observable<string> {
     return this.http.get<string>(`${this.apiUrl}/authenticatedUser`);
