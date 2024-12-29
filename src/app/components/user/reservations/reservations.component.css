@@ -1,0 +1,160 @@
+.reservations-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  margin-top: 64px;
+}
+
+/* Header Section */
+.header-section {
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content h1 {
+  margin: 0;
+  color: #1a237e;
+  font-size: 2rem;
+}
+
+/* Search Section */
+.search-section {
+  margin-bottom: 2rem;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 400px;
+}
+
+.search-input input {
+  width: 100%;
+  padding: 0.75rem 2.5rem;
+}
+
+/* Reservations Grid */
+.reservations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.reservation-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.reservation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-header h2 {
+  margin: 0;
+  color: #1a237e;
+  font-size: 1.25rem;
+}
+
+.author {
+  color: #666;
+  margin: 0.5rem 0;
+}
+
+.reservation-details {
+  margin: 1rem 0;
+}
+
+.dates p {
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+.status-info {
+  margin-top: 1rem;
+}
+
+.status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Status Colors */
+.active .status-badge {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.expired .status-badge {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.inactive .status-badge {
+  background-color: #eeeeee;
+  color: #757575;
+}
+
+.reservation-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.loading-state p {
+  margin-top: 1rem;
+  color: #666;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.empty-state i {
+  color: #1a237e;
+  opacity: 0.5;
+}
+
+.empty-state h2 {
+  margin: 1rem 0;
+  color: #1a237e;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .reservations-container {
+    padding: 1rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .search-input {
+    max-width: 100%;
+  }
+
+  .reservations-grid {
+    grid-template-columns: 1fr;
+  }
+}

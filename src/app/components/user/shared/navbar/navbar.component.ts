@@ -66,7 +66,7 @@ export class NavbarComponent implements OnInit {
       {
         label: 'My Reservations',
         icon: 'pi pi-calendar',
-        routerLink: ['/user/borrowings'],
+        routerLink: [this.userRoles.includes('ROLE_ADMIN') ? '/LibraryHub/Admin/Reservations' : '/LibraryHub/User/Reservations'],
         command: () => this.closeMenu()
       }
     ];

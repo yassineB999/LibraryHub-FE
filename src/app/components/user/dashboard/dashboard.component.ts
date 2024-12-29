@@ -30,9 +30,9 @@ export class DashboardComponent implements OnInit {
   showRoleDialog: boolean = false;
   selectedRole: string = '';
   bookStats: BookStats = {
-    borrowed: 3,
-    returned: 5,
-    reserved: 1,
+    borrowed: 0,
+    returned: 0,
+    reserved: 0
   };
   recentBooks: RecentBook[] = [
     {
@@ -108,10 +108,35 @@ export class DashboardComponent implements OnInit {
       const token = await this.keycloak.getToken();
       console.log('Token available:', token ? 'yes' : 'no');
 
-      this.initChartData();
+      this.loadDashboardStats();
     } catch (error) {
       console.error('Error in dashboard initialization:', error);
     }
+  }
+
+  loadDashboardStats() {
+    this.usersService.getMyTotalDashboardInformation().subscribe({
+      next: (response: any) => {
+        this.bookStats = {
+          borrowed: response.borrowsCount || 0,
+          reserved: response.reservationsCount || 0,
+          returned: response.returnedBorrowsCount || 0
+        };
+
+        this.recentBooks = response.recentReturnedBooks.map((book: any) => ({
+          id: book.idBook,
+          title: book.title,
+          author: book.author,
+          coverUrl: book.imageUrl,
+          status: 'returned',
+          dueDate: book.publicationYear
+        }));
+        this.initChartData();
+      },
+      error: (error) => {
+        console.error('Error loading dashboard stats:', error);
+      }
+    });
   }
 
   private initChartData() {
@@ -124,16 +149,7 @@ export class DashboardComponent implements OnInit {
             this.bookStats.reserved,
             this.bookStats.returned
           ],
-          backgroundColor: [
-            '#42A5F5', // Light Blue
-            '#FFA726', // Orange
-            '#66BB6A'  // Green
-          ],
-          hoverBackgroundColor: [
-            '#1E88E5', // Darker Blue
-            '#FB8C00', // Darker Orange
-            '#43A047'  // Darker Green
-          ]
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
         }
       ]
     };

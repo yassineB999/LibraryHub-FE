@@ -1,0 +1,91 @@
+<app-navbar></app-navbar>
+
+<div class="reservations-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-content">
+      <h1>My Reservations</h1>
+      <div class="view-toggle">
+        <p-selectButton [options]="viewModes" [(ngModel)]="viewMode"
+                       (onChange)="onViewModeChange()"
+                       styleClass="view-toggle-buttons">
+        </p-selectButton>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <span class="p-input-icon-left search-input">
+      <i class="pi pi-search"></i>
+      <input type="text" pInputText [(ngModel)]="searchQuery" 
+             placeholder="Search by book ID...">
+    </span>
+  </div>
+
+  <!-- Reservations Grid -->
+  <div class="reservations-grid" *ngIf="!loading && filterReservations().length > 0">
+    <p-card *ngFor="let reservation of filterReservations()" 
+            class="reservation-card"
+            [ngClass]="getStatusClass(reservation)">
+      <div class="reservation-header">
+        <h2>Book ID: {{reservation.idBook}}</h2>
+      </div>
+
+      <div class="reservation-details">
+        <div class="dates">
+          <p>
+            <strong>Reserved:</strong> 
+            {{formatDate(reservation.reservationDate)}}
+          </p>
+          <p>
+            <strong>Expires:</strong> 
+            {{formatDate(reservation.expirationDate)}}
+          </p>
+        </div>
+
+        <div class="status-info" [ngClass]="getStatusClass(reservation)">
+          <span class="status-badge">
+            <ng-container [ngSwitch]="true">
+              <ng-container *ngSwitchCase="!reservation.isActive">
+                Inactive
+              </ng-container>
+              <ng-container *ngSwitchCase="isExpired(reservation.expirationDate)">
+                Expired
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                Active ({{getDaysUntilExpiration(reservation.expirationDate)}} days left)
+              </ng-container>
+            </ng-container>
+          </span>
+        </div>
+      </div>
+
+      <div class="reservation-actions">
+        <button pButton 
+                label="Cancel Reservation" 
+                icon="pi pi-times"
+                class="p-button-danger"
+                [disabled]="!reservation.isActive"
+                (click)="cancelReservation(reservation)"
+                pTooltip="Cancel this reservation"
+                tooltipPosition="top">
+        </button>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <p-progressSpinner strokeWidth="4"></p-progressSpinner>
+    <p>Loading reservations...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && filterReservations().length === 0" class="empty-state">
+    <i class="pi pi-calendar-times" style="font-size: 3rem"></i>
+    <h2>No reservations found</h2>
+    <p *ngIf="searchQuery">Try adjusting your search to find what you're looking for.</p>
+    <p *ngIf="!searchQuery">You don't have any {{viewMode === 'active' ? 'active ' : ''}}reservations yet.</p>
+  </div>
+</div>

@@ -12,13 +12,19 @@ const routes: Routes = [
   // ROUTES FOR USER
   { path: 'LibraryHub/User/Dashboard', loadChildren: () => import('./components/user/dashboard/dashboard.module').then(m => m.DashboardModule) },
   { path: 'LibraryHub/User/Books', loadChildren: () => import('./components/user/books/books.module').then(m => m.BooksModule), canActivate: [AuthGuard], data: { expectedRoles: ['ROLE_USER'] }},
+  { path: 'LibraryHub/User/Reservations', loadChildren: () => import('./components/user/reservations/reservations.module').then(m => m.ReservationsModule), canActivate: [AuthGuard], data: { expectedRoles: ['ROLE_USER'] }},
+
+
   // END ROUTES FOR USER
 
 
 
   // ROUTES FOR ADMIN
   { path: 'LibraryHub/Admin/Dashboard', loadChildren: () => import('./components/user/dashboard/dashboard.module').then(m => m.DashboardModule) },
-  { path: 'LibraryHub/Admin/Books', loadChildren: () => import('./components/user/books/books.module').then(m => m.BooksModule), canActivate: [AuthGuard], data: { expectedRoles: ['ROLE_USER'] }},
+  { path: 'LibraryHub/Admin/Books', loadChildren: () => import('./components/user/books/books.module').then(m => m.BooksModule), canActivate: [AuthGuard], data: { expectedRoles: ['ROLE_ADMIN'] }},
+  { path: 'LibraryHub/Admin/Reservations', loadChildren: () => import('./components/user/reservations/reservations.module').then(m => m.ReservationsModule), canActivate: [AuthGuard], data: { expectedRoles: ['ROLE_ADMIN'] }},
+
+
   // END ROUTES FOR ADMIN
 
 

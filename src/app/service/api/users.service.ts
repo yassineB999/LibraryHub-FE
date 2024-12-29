@@ -52,6 +52,10 @@ export class UsersService {
     return this.http.get<User>(`${this.apiUrl}/deletedUsers/${idUser}`);
   }
 
+  getMyTotalDashboardInformation(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/myTotalDashboardInformation`);
+  }
+
   // Create new user (Admin only)
   createUser(createUserDTO: CreateUserDTO): Observable<User | string> {
     return this.http.post<User | string>(`${this.apiUrl}/create`, createUserDTO);
@@ -71,4 +75,6 @@ export class UsersService {
   deleteUser(deleteUserDTO: DeleteUserDTO): Observable<User | string> {
     return this.http.delete<User | string>(`${this.apiUrl}/delete`, { body: deleteUserDTO });
   }
+
+
 }
