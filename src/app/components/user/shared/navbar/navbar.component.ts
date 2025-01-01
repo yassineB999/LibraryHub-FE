@@ -77,13 +77,24 @@ export class NavbarComponent implements OnInit {
         {
           label: 'Users Management',
           icon: 'pi pi-users',
-          routerLink: ['/admin/users'],
+          routerLink: ['/LibraryHub/Admin/UserManagement'],
           command: () => this.closeMenu()
         },
         {
           label: 'Books Management',
           icon: 'pi pi-book',
-          routerLink: ['/admin/books'],
+          routerLink: ['/LibraryHub/Admin/BookManagement'],
+          command: () => this.closeMenu()
+        }
+      );
+    }
+
+    if (this.userRoles.includes('ROLE_TEACHER')) {
+      this.menuItems.push(
+        {
+          label: 'Books Management',
+          icon: 'pi pi-book',
+          routerLink: ['/LibraryHub/Teacher/BookManagement'],
           command: () => this.closeMenu()
         }
       );
@@ -98,12 +109,6 @@ export class NavbarComponent implements OnInit {
             label: 'Profile',
             icon: 'pi pi-user',
             routerLink: ['/profile'],
-            command: () => this.closeMenu()
-          },
-          {
-            label: 'Settings',
-            icon: 'pi pi-cog',
-            routerLink: ['/settings'],
             command: () => this.closeMenu()
           },
           {

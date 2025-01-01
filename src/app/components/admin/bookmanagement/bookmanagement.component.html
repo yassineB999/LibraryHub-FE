@@ -1,0 +1,156 @@
+<app-navbar></app-navbar>
+
+<div class="book-management-container">
+  <p-card>
+    <div class="card-header">
+      <h2>Book Management</h2>
+      <div class="header-actions">
+        <span class="p-input-icon-left search-box">
+          <i class="pi pi-search"></i>
+          <input type="text" pInputText [(ngModel)]="searchQuery" 
+                 placeholder="Search books..." 
+                 (input)="searchBooks()" />
+        </span>
+        <button pButton type="button" label="Add Book" icon="pi pi-plus" (click)="openCreateDialog()"></button>
+      </div>
+    </div>
+
+    <p-table [value]="filteredBooks" 
+             [lazy]="true"
+             [paginator]="true" 
+             [rows]="pageSize"
+             [totalRecords]="totalRecords"
+             [loading]="loading"
+             (onPage)="onPageChange($event)"
+             [rowsPerPageOptions]="[10,20,50]"
+             [showCurrentPageReport]="true"
+             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} books"
+             [responsive]="true" 
+             styleClass="p-datatable-striped">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>ISBN</th>
+          <th>Year</th>
+          <th>Themes</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-book>
+        <tr>
+          <td>{{ book.title }}</td>
+          <td>{{ getAuthorDisplay(book.author) }}</td>
+          <td>{{ book.isbn }}</td>
+          <td>{{ book.publicationYear }}</td>
+          <td>
+            <div class="theme-badges">
+              <span class="theme-badge" *ngFor="let theme of book.themes">{{ theme.name }}</span>
+            </div>
+          </td>
+          <td>
+            <span [class]="book.isAvailable ? 'status-badge available' : 'status-badge unavailable'">
+              {{ book.isAvailable ? 'Available' : 'Unavailable' }}
+            </span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button pButton type="button" icon="pi pi-pencil" 
+                      class="p-button-rounded p-button-warning p-button-text" 
+                      (click)="openUpdateDialog(book)" 
+                      pTooltip="Edit Book"></button>
+              <button pButton type="button" 
+                      [icon]="book.isAvailable ? 'pi pi-lock' : 'pi pi-lock-open'" 
+                      class="p-button-rounded p-button-info p-button-text"
+                      (click)="toggleBookAvailability(book)" 
+                      [pTooltip]="book.isAvailable ? 'Mark as Unavailable' : 'Mark as Available'"></button>
+              <button pButton type="button" 
+                      icon="pi pi-trash"
+                      class="p-button-rounded p-button-danger p-button-text"
+                      (click)="deleteBook(book)" 
+                      pTooltip="Delete Book"></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center">No books found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<!-- Create Book Dialog -->
+<p-dialog [(visible)]="createDialogVisible" 
+          [style]="{width: '450px'}" 
+          [modal]="true"
+          header="Add New Book">
+  <ng-template pTemplate="content">
+    <form #createForm="ngForm" (ngSubmit)="createBook(createForm)">
+      <div class="field">
+        <label for="title">Title</label>
+        <input type="text" pInputText id="title" name="title" 
+               [(ngModel)]="newBook.title" required>
+      </div>
+      <div class="field">
+        <label for="author">Author</label>
+        <input type="text" pInputText id="author" name="author" 
+               [(ngModel)]="newBook.author" required>
+      </div>
+      <div class="field">
+        <label for="isbn">ISBN</label>
+        <input type="text" pInputText id="isbn" name="isbn" 
+               [(ngModel)]="newBook.isbn" required>
+      </div>
+      <div class="field">
+        <label for="publicationYear">Publication Year</label>
+        <p-inputNumber id="publicationYear" name="publicationYear" 
+                      [(ngModel)]="newBook.publicationYear" 
+                      [min]="1800" [max]="2100"></p-inputNumber>
+      </div>
+      <div class="dialog-footer">
+        <button pButton type="button" label="Cancel" class="p-button-text" (click)="createDialogVisible = false"></button>
+        <button pButton type="submit" label="Create" [disabled]="!createForm.valid"></button>
+      </div>
+    </form>
+  </ng-template>
+</p-dialog>
+
+<!-- Update Book Dialog -->
+<p-dialog [(visible)]="updateDialogVisible" 
+          [style]="{width: '450px'}" 
+          [modal]="true"
+          header="Update Book">
+  <ng-template pTemplate="content">
+    <form *ngIf="selectedBook" #updateForm="ngForm" (ngSubmit)="updateBook(updateForm)">
+      <div class="field">
+        <label for="title">Title</label>
+        <input type="text" pInputText id="title" name="title" 
+               [(ngModel)]="selectedBook.title" required>
+      </div>
+      <div class="field">
+        <label for="author">Author</label>
+        <input type="text" pInputText id="author" name="author" 
+               [(ngModel)]="selectedBook.author" required>
+      </div>
+      <div class="field">
+        <label for="isbn">ISBN</label>
+        <input type="text" pInputText id="isbn" name="isbn" 
+               [(ngModel)]="selectedBook.isbn" required>
+      </div>
+      <div class="field">
+        <label for="publicationYear">Publication Year</label>
+        <p-inputNumber id="publicationYear" name="publicationYear" 
+                      [(ngModel)]="selectedBook.publicationYear" 
+                      [min]="1800" [max]="2100"></p-inputNumber>
+      </div>
+      <div class="dialog-footer">
+        <button pButton type="button" label="Cancel" class="p-button-text" (click)="updateDialogVisible = false"></button>
+        <button pButton type="submit" label="Update" [disabled]="!updateForm.valid"></button>
+      </div>
+    </form>
+  </ng-template>
+</p-dialog>

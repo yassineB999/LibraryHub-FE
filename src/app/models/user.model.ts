@@ -1,12 +1,11 @@
 export interface User {
-    id: string;
+    _id: string;
     username: string;
     email: string;
     firstName: string;
     lastName: string;
-    enabled: boolean;
+    userType: string;
     isDeleted: boolean;
-    roles: string[];
 }
 
 export interface CreateUserDTO {
@@ -24,6 +23,7 @@ export interface UpdateUserDTO {
     email?: string;
     firstName?: string;
     lastName?: string;
+    userType?: string;
     enabled?: boolean;
     roles?: string[];
 }

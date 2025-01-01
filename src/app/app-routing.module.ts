@@ -23,10 +23,13 @@ const routes: Routes = [
   { path: 'LibraryHub/Admin/Dashboard', loadChildren: () => import('./components/user/dashboard/dashboard.module').then(m => m.DashboardModule) },
   { path: 'LibraryHub/Admin/Books', loadChildren: () => import('./components/user/books/books.module').then(m => m.BooksModule), canActivate: [AuthGuard], data: { expectedRoles: ['ROLE_ADMIN'] }},
   { path: 'LibraryHub/Admin/Reservations', loadChildren: () => import('./components/user/reservations/reservations.module').then(m => m.ReservationsModule), canActivate: [AuthGuard], data: { expectedRoles: ['ROLE_ADMIN'] }},
-
+  { path: 'LibraryHub/Admin/UserManagement', loadChildren: () => import('./components/admin/usermanagment/usermanagment.module').then(m => m.UsermanagmentModule), canActivate: [AuthGuard], data: { expectedRoles: ['ROLE_ADMIN'] } },
 
   // END ROUTES FOR ADMIN
 
+
+   // ROUTES FOR TEACHER
+  { path: 'LibraryHub/Admin/BookManagement', loadChildren: () => import('./components/admin/bookmanagement/bookmanagement.module').then(m => m.BookmanagementModule), canActivate: [AuthGuard], data: { expectedRoles: ['ROLE_ADMIN', 'ROLE_TEACHER'] } },
 
 
   // WRONG PATH URL

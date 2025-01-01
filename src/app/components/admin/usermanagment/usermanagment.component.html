@@ -1,0 +1,91 @@
+<app-navbar></app-navbar>
+
+<div class="user-management-container">
+  <p-card>
+    <div class="card-header">
+      <h2>User Management</h2>
+      <span class="p-input-icon-left search-box">
+        <i class="pi pi-search"></i>
+        <input type="text" pInputText [(ngModel)]="searchQuery" placeholder="Search users..." (input)="searchUsers()" />
+      </span>
+    </div>
+
+    <p-table [value]="filteredUsers" [paginator]="true" [rows]="10" [responsive]="true" styleClass="p-datatable-striped">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Full Name</th>
+          <th>User Type</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>{{ user.email }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.firstName }} {{ user.lastName }}</td>
+          <td>
+            <span class="user-type-badge">{{ user.userType }}</span>
+          </td>
+          <td>
+            <span [class]="!user.isDeleted ? 'status-badge active' : 'status-badge inactive'">
+              {{ !user.isDeleted ? 'Active' : 'Deleted' }}
+            </span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button pButton type="button" icon="pi pi-pencil" 
+                      class="p-button-rounded p-button-warning p-button-text" 
+                      (click)="openUpdateDialog(user)" 
+                      pTooltip="Edit User"
+                      [disabled]="user.isDeleted"></button>
+              <button pButton type="button" 
+                      [icon]="user.isDeleted ? 'pi pi-refresh' : 'pi pi-trash'" 
+                      [class]="user.isDeleted ? 'p-button-rounded p-button-success p-button-text' : 'p-button-rounded p-button-danger p-button-text'"
+                      (click)="toggleUserStatus(user)" 
+                      [pTooltip]="user.isDeleted ? 'Restore User' : 'Delete User'"></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<!-- Update User Dialog -->
+<p-dialog [(visible)]="updateDialogVisible" 
+          [style]="{width: '450px'}" 
+          [modal]="true"
+          [header]="'Update User'">
+  <ng-template pTemplate="content">
+    <form *ngIf="selectedUser" #updateForm="ngForm" (ngSubmit)="updateUser(updateForm)">
+      <div class="field">
+        <label for="firstName">First Name</label>
+        <input type="text" pInputText id="firstName" name="firstName" 
+               [(ngModel)]="selectedUser.firstName" required>
+      </div>
+      <div class="field">
+        <label for="lastName">Last Name</label>
+        <input type="text" pInputText id="lastName" name="lastName" 
+               [(ngModel)]="selectedUser.lastName" required>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" pInputText id="email" name="email" 
+               [(ngModel)]="selectedUser.email" required email>
+      </div>
+      <div class="field">
+        <label for="userType">User Type</label>
+        <p-dropdown id="userType" name="userType" 
+                   [(ngModel)]="selectedUser.userType" 
+                   [options]="userTypes"></p-dropdown>
+      </div>
+      <div class="dialog-footer">
+        <button pButton type="button" label="Cancel" class="p-button-text" (click)="updateDialogVisible = false"></button>
+        <button pButton type="submit" label="Update" [disabled]="!updateForm.valid"></button>
+      </div>
+    </form>
+  </ng-template>
+</p-dialog>
