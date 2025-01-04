@@ -25,12 +25,17 @@ export interface CreateBookDTO {
     themes: number[];
 }
 
+export interface CreateThemeDTO {
+    idTheme: number;
+}
+
 export interface UpdateBookDTO {
     idBook: number;
     title: string;
     author: string;
     isbn: string;
     publicationYear: number;
+    themes: CreateThemeDTO[];
 }
 
 export interface UpdateBookAvailabilityDTO {

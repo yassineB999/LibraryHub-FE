@@ -2,15 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { BooksService } from '../../../service/api/books.service';
 import { DataBookDTO, CreateBookDTO, UpdateBookDTO, DataThemeDTO } from '../../../models/book.model';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-bookmanagement',
   templateUrl: './bookmanagement.component.html',
-  styleUrls: ['./bookmanagement.component.css']
+  styleUrls: ['./bookmanagement.component.css'],
+  providers: [MessageService]
 })
 export class BookmanagementComponent implements OnInit {
   books: DataBookDTO[] = [];
   searchQuery: string = '';
+  searchTimeout: any;
   filteredBooks: DataBookDTO[] = [];
   updateDialogVisible: boolean = false;
   createDialogVisible: boolean = false;
@@ -30,7 +33,7 @@ export class BookmanagementComponent implements OnInit {
     themes: []
   };
 
-  constructor(private booksService: BooksService) {
+  constructor(private booksService: BooksService, private messageService: MessageService) {
     this.currentPage = 0;  // Initialize to first page
     this.pageSize = 10;    // Initialize page size
   }
@@ -79,6 +82,10 @@ export class BookmanagementComponent implements OnInit {
 
   openUpdateDialog(book: DataBookDTO): void {
     this.selectedBook = { ...book };
+    // Convert author array to string if it's an array
+    if (Array.isArray(this.selectedBook.author)) {
+      this.selectedBook.author = this.selectedBook.author.join(', ');
+    }
     this.updateDialogVisible = true;
   }
 
@@ -96,20 +103,75 @@ export class BookmanagementComponent implements OnInit {
 
   updateBook(form: NgForm): void {
     if (form.valid && this.selectedBook) {
+      // Ensure all required fields are present
+      if (!this.selectedBook.title?.trim() || 
+          !this.selectedBook.author || 
+          !this.selectedBook.isbn?.trim() || 
+          !this.selectedBook.publicationYear) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Validation Error',
+          detail: 'Please fill in all required fields'
+        });
+        return;
+      }
+
+      // Convert author string to proper format
+      let authorValue: string;
+      if (typeof this.selectedBook.author === 'string') {
+        // Split by comma and clean up each author
+        authorValue = this.selectedBook.author
+          .split(',')
+          .map(author => author.trim())
+          .filter(author => author.length > 0)
+          .join(', ');
+      } else {
+        authorValue = this.selectedBook.author.join(', ');
+      }
+
+      // Convert themes to proper DTO format
+      const themeDTOs = this.selectedBook.themes.map(theme => ({
+        idTheme: theme.idTheme
+      }));
+
       const updateDto: UpdateBookDTO = {
         idBook: this.selectedBook.idBook,
-        title: this.selectedBook.title,
-        author: this.getAuthorDisplay(this.selectedBook.author),
-        isbn: this.selectedBook.isbn,
-        publicationYear: this.selectedBook.publicationYear
+        title: this.selectedBook.title.trim(),
+        author: authorValue,
+        isbn: this.selectedBook.isbn.trim(),
+        publicationYear: this.selectedBook.publicationYear,
+        themes: themeDTOs
       };
 
+      console.log('Sending update DTO:', updateDto); // For debugging
+
       this.booksService.updateBook(updateDto).subscribe(
-        () => {
-          this.updateDialogVisible = false;
-          this.loadBooks();
+        (response) => {
+          if (typeof response === 'string') {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: response
+            });
+          } else {
+            this.updateDialogVisible = false;
+            this.loadBooks();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Book updated successfully'
+            });
+          }
         },
-        (error) => console.error('Error updating book:', error)
+        (error) => {
+          console.error('Error updating book:', error);
+          const errorMessage = error.error?.message || 'Failed to update book. Please ensure all fields are filled correctly.';
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: errorMessage
+          });
+        }
       );
     }
   }
@@ -147,7 +209,44 @@ export class BookmanagementComponent implements OnInit {
   }
 
   searchBooks(): void {
-    this.currentPage = 0; // Reset to first page when searching
+    // Clear any existing timeout
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    // Set a new timeout to debounce the search
+    this.searchTimeout = setTimeout(() => {
+      this.currentPage = 0; // Reset to first page when searching
+      this.loading = true;
+
+      // If search query is empty, load all books
+      if (!this.searchQuery.trim()) {
+        this.loadBooks();
+        return;
+      }
+
+      this.booksService.getSearchedBooks(this.searchQuery.trim()).subscribe(
+        (books) => {
+          this.books = books;
+          this.filteredBooks = books;
+          this.totalRecords = books.length;
+          this.loading = false;
+        },
+        (error) => {
+          console.error('Error searching books:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to search books'
+          });
+          this.loading = false;
+        }
+      );
+    }, 300); // Wait 300ms after user stops typing before searching
+  }
+
+  clearSearch(): void {
+    this.searchQuery = '';
     this.loadBooks();
   }
 }

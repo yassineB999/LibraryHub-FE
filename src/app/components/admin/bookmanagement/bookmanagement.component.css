@@ -1,5 +1,5 @@
 .book-management-container {
-  padding: 2rem;
+  padding: 1rem;
   margin-top: 64px;
 }
 
@@ -17,28 +17,18 @@
 
 .header-actions {
   display: flex;
-  gap: 1rem;
   align-items: center;
+  gap: 1rem;
 }
 
-.search-box {
-  width: 300px;
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.status-badge {
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.875rem;
-}
-
-.status-badge.available {
-  background-color: #c8e6c9;
-  color: #256029;
-}
-
-.status-badge.unavailable {
-  background-color: #ffcdd2;
-  color: #c63737;
+.search-input {
+  min-width: 300px;
 }
 
 .theme-badges {
@@ -50,15 +40,31 @@
 .theme-badge {
   background-color: var(--primary-color);
   color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
   font-size: 0.875rem;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+}
+
+.status-badge.available {
+  background-color: var(--green-100);
+  color: var(--green-900);
+}
+
+.status-badge.unavailable {
+  background-color: var(--red-100);
+  color: var(--red-900);
 }
 
 .action-buttons {
   display: flex;
   gap: 0.5rem;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 /* Dialog Styles */
@@ -82,41 +88,61 @@
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--surface-200);
 }
 
-:host ::ng-deep .p-card {
-  background: var(--surface-card);
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+.text-muted {
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
 }
 
-:host ::ng-deep .p-datatable .p-datatable-header {
-  background: transparent;
-  border: none;
-  padding: 0;
-}
+:host ::ng-deep {
+  .p-card {
+    background: var(--surface-card);
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
 
-:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-  background: var(--surface-ground);
-  color: var(--text-color);
-  font-weight: 600;
-  padding: 1rem;
-}
+  .p-datatable .p-datatable-header {
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
 
-:host ::ng-deep .p-button.p-button-text:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+  .p-datatable .p-datatable-thead > tr > th {
+    background: var(--surface-ground);
+    color: var(--text-color);
+    font-weight: 600;
+    padding: 1rem;
+  }
 
-:host ::ng-deep .p-dialog .p-dialog-content {
-  padding: 2rem;
-}
+  .p-button.p-button-text:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-:host ::ng-deep .p-inputnumber {
-  width: 100%;
-}
+  .p-dialog .p-dialog-content {
+    padding: 2rem;
+  }
 
-:host ::ng-deep .p-inputnumber-input {
-  width: 100%;
+  .p-inputnumber {
+    width: 100%;
+  }
+
+  .p-inputnumber-input {
+    width: 100%;
+  }
+
+  .p-button.p-button-sm {
+    padding: 0.25rem;
+    height: 2rem;
+    width: 2rem;
+  }
+
+  .p-datatable .p-datatable-tbody > tr > td {
+    padding: 0.75rem;
+  }
 }
