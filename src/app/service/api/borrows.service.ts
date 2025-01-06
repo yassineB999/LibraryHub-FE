@@ -40,6 +40,10 @@ export class BorrowsService {
     return this.http.get<Borrow>(`${this.apiUrl}/myBorrow/${idBorrow}`);
   }
 
+  returnBook(idBorrow: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/returnMyBorrowedBook/${idBorrow}`, {});
+  }
+
   // Get latest borrow for a specific book
   getLatestBorrowByIdBook(idBook: number): Observable<Borrow> {
     return this.http.get<Borrow>(`${this.apiUrl}/latestBorrowedBook/${idBook}`);

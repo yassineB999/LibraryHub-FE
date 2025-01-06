@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ReservationsService } from '../../../service/api/reservations.service';
-import { Reservation } from '../../../models/reservation.model';
+import { BooksService } from '../../../service/api/books.service';
+import { DeleteReservationDTO, Reservation } from '../../../models/reservation.model';
+import { forkJoin } from 'rxjs';
 
 interface ViewMode {
   label: string;
-  value: string;
+  value: 'all' | 'active';
 }
 
 @Component({
@@ -25,7 +27,8 @@ export class ReservationsComponent implements OnInit {
   ];
 
   constructor(
-    private reservationsService: ReservationsService
+    private reservationsService: ReservationsService,
+    private booksService: BooksService
   ) {}
 
   ngOnInit(): void {
@@ -40,8 +43,25 @@ export class ReservationsComponent implements OnInit {
 
     request.subscribe({
       next: (reservations) => {
-        this.reservations = reservations;
-        this.loading = false;
+        // Create an array of book requests
+        const bookRequests = reservations.map(reservation =>
+          this.booksService.getBookById(reservation.idBook)
+        );
+
+        // Fetch all books in parallel
+        forkJoin(bookRequests).subscribe({
+          next: (books) => {
+            this.reservations = reservations.map((reservation, index) => ({
+              ...reservation,
+              book: books[index]
+            }));
+            this.loading = false;
+          },
+          error: (error) => {
+            console.error('Error loading books:', error);
+            this.loading = false;
+          }
+        });
       },
       error: (error) => {
         console.error('Error loading reservations:', error);
@@ -54,49 +74,52 @@ export class ReservationsComponent implements OnInit {
     this.loadReservations();
   }
 
-  cancelReservation(reservation: Reservation): void {
-    this.loading = true;
-    this.reservationsService.deleteReservation({ idReservation: reservation.id }).subscribe({
-      next: () => {
-        this.loadReservations();
-      },
-      error: (error) => {
-        console.error('Error canceling reservation:', error);
-        this.loading = false;
-      }
-    });
-  }
-
-  formatDate(date: string): string {
-    return new Date(date).toLocaleDateString('en-US', {
+  formatDate(dateString: string): string {
+    if (!dateString) return 'Not Available';
+    return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
   }
 
-  isExpired(expirationDate: string): boolean {
-    return new Date(expirationDate) < new Date();
-  }
-
-  getDaysUntilExpiration(expirationDate: string): number {
-    const today = new Date();
-    const expDate = new Date(expirationDate);
-    const diffTime = expDate.getTime() - today.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  }
-
-  getStatusClass(reservation: Reservation): string {
-    if (!reservation.isActive) return 'inactive';
-    return this.isExpired(reservation.expirationDate) ? 'expired' : 'active';
+  formatAuthors(author: string | string[]): string {
+    if (Array.isArray(author)) {
+      return author.join(', ');
+    }
+    return String(author);
   }
 
   filterReservations(): Reservation[] {
-    return this.reservations.filter(reservation => {
-      const bookId = reservation.idBook.toString();
-      const query = this.searchQuery.toLowerCase();
+    if (!this.searchQuery) return this.reservations;
 
-      return !this.searchQuery || bookId.includes(query);
+    const query = this.searchQuery.toLowerCase();
+    return this.reservations.filter(reservation => 
+      reservation.book?.title.toLowerCase().includes(query)
+    );
+  }
+
+  getStatusClass(reservation: Reservation): string {
+    return reservation.isActive ? 'active' : 'inactive';
+  }
+
+  cancelReservation(reservation: Reservation): void {
+    // Prepare the DTO
+    const deleteReservationDTO: DeleteReservationDTO = {
+      idReservation: reservation.idReservation
+    };
+
+    // Call delete method with DTO
+    this.reservationsService.deleteReservation(deleteReservationDTO).subscribe({
+      next: () => {
+        // Remove the reservation from the list
+        this.reservations = this.reservations.filter(r => r.idReservation !== reservation.idReservation);
+        // Optional: Add a success message or toast notification
+      },
+      error: (error) => {
+        console.error('Error canceling reservation:', error);
+        // Optional: Add an error message or toast notification
+      }
     });
   }
 }

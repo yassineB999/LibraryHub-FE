@@ -29,7 +29,20 @@
             class="reservation-card"
             [ngClass]="getStatusClass(reservation)">
       <div class="reservation-header">
-        <h2>Book ID: {{reservation.idBook}}</h2>
+        <div class="book-info" *ngIf="reservation.book">
+          <img [src]="reservation.book.imageUrl" 
+               [alt]="reservation.book.title"
+               (error)="reservation.book.imageUrl = 'assets/images/default-book.jpg'"
+               class="book-cover">
+          <div class="book-details">
+            <h2>{{reservation.book.title}}</h2>
+            <p class="author">by {{formatAuthors(reservation.book.author)}}</p>
+            <div class="book-metadata">
+              <span><i class="pi pi-calendar"></i> {{reservation.book.publicationYear}}</span>
+              <span *ngIf="reservation.book.isbn"><i class="pi pi-id-card"></i> {{reservation.book.isbn}}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="reservation-details">
@@ -37,10 +50,6 @@
           <p>
             <strong>Reserved:</strong> 
             {{formatDate(reservation.reservationDate)}}
-          </p>
-          <p>
-            <strong>Expires:</strong> 
-            {{formatDate(reservation.expirationDate)}}
           </p>
         </div>
 
@@ -50,27 +59,20 @@
               <ng-container *ngSwitchCase="!reservation.isActive">
                 Inactive
               </ng-container>
-              <ng-container *ngSwitchCase="isExpired(reservation.expirationDate)">
-                Expired
-              </ng-container>
-              <ng-container *ngSwitchDefault>
-                Active ({{getDaysUntilExpiration(reservation.expirationDate)}} days left)
+              <ng-container *ngSwitchCase="reservation.isActive">
+                Active
               </ng-container>
             </ng-container>
           </span>
         </div>
-      </div>
-
-      <div class="reservation-actions">
-        <button pButton 
-                label="Cancel Reservation" 
-                icon="pi pi-times"
-                class="p-button-danger"
-                [disabled]="!reservation.isActive"
-                (click)="cancelReservation(reservation)"
-                pTooltip="Cancel this reservation"
-                tooltipPosition="top">
-        </button>
+        
+        <div class="action-buttons">
+          <p-button icon="pi pi-times" 
+                   label="Cancel"
+                   styleClass="p-button-danger"
+                   (onClick)="cancelReservation(reservation)">
+          </p-button>
+        </div>
       </div>
     </p-card>
   </div>

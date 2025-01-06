@@ -34,31 +34,7 @@ export class DashboardComponent implements OnInit {
     returned: 0,
     reserved: 0
   };
-  recentBooks: RecentBook[] = [
-    {
-      id: '1',
-      title: 'The Great Gatsby',
-      author: 'F. Scott Fitzgerald',
-      coverUrl: 'https://covers.openlibrary.org/b/id/11983442-M.jpg',
-      status: 'borrowed',
-      dueDate: new Date('2024-01-05')
-    },
-    {
-      id: '2',
-      title: '1984',
-      author: 'George Orwell',
-      coverUrl: 'https://covers.openlibrary.org/b/id/9269962-M.jpg',
-      status: 'reserved',
-      dueDate: new Date('2024-01-10')
-    },
-    {
-      id: '3',
-      title: 'To Kill a Mockingbird',
-      author: 'Harper Lee',
-      coverUrl: 'https://covers.openlibrary.org/b/id/679461-M.jpg',
-      status: 'returned'
-    }
-  ];
+  recentBooks: RecentBook[] = [];
   chartData: any;
   chartOptions: any;
 

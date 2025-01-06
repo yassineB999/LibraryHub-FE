@@ -58,18 +58,27 @@
           </span>
         </div>
         <div class="book-actions">
-          <p-button *ngIf="book.isAvailable" 
-                   icon="pi pi-book" 
-                   label="Borrow"
-                   styleClass="p-button-success"
-                   (onClick)="showBorrowDialog(book)">
-          </p-button>
-          <p-button *ngIf="!book.isAvailable" 
-                   icon="pi pi-clock" 
-                   label="Reserve"
-                   styleClass="p-button-secondary"
-                   (onClick)="reserveBook(book)">
-          </p-button>
+          <ng-container *ngIf="viewMode === 'all'">
+            <p-button *ngIf="book.isAvailable" 
+                     icon="pi pi-book" 
+                     label="Borrow"
+                     styleClass="p-button-success"
+                     (onClick)="showBorrowDialog(book)">
+            </p-button>
+            <p-button *ngIf="!book.isAvailable" 
+                     icon="pi pi-clock" 
+                     label="Reserve"
+                     styleClass="p-button-secondary"
+                     (onClick)="reserveBook(book)">
+            </p-button>
+          </ng-container>
+          <ng-container *ngIf="viewMode === 'borrowed' && !book.isAvailable">
+            <p-button icon="pi pi-reply" 
+                     label="Return Book"
+                     styleClass="p-button-warning"
+                     (onClick)="returnBook(book)">
+            </p-button>
+          </ng-container>
         </div>
       </div>
     </div>
@@ -101,7 +110,7 @@
 
 <!-- Borrow Dialog -->
 <p-dialog [(visible)]="displayBorrowDialog" 
-          [style]="{width: '450px'}" 
+          [style]="{width: '450px', height:'70%'}" 
           header="Borrow Book" 
           [modal]="true"
           [draggable]="false"

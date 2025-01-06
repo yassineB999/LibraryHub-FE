@@ -42,28 +42,30 @@
 
 .books-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 2.5rem;
   margin-bottom: 2rem;
 }
 
 .book-card {
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.2s;
+  transition: transform 0.3s, box-shadow 0.3s;
   height: 100%;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .book-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .book-cover {
   position: relative;
-  padding-top: 56.25%; /* 16:9 aspect ratio */
+  padding-top: 65%; /* Increased aspect ratio */
   background: #f0f0f0;
   overflow: hidden;
 }
@@ -75,6 +77,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.book-card:hover .book-cover img {
+  transform: scale(1.05);
 }
 
 .book-status {
@@ -97,16 +104,16 @@
 }
 
 .book-info {
-  padding: 1.5rem;
+  padding: 2rem;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
 .book-title {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.2rem;
-  font-weight: 600;
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--text-color);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -116,15 +123,16 @@
 
 .author {
   color: var(--text-color-secondary);
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
   font-style: italic;
 }
 
 .book-details {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
 }
 
 .book-details i {
@@ -154,6 +162,10 @@
   margin-top: auto;
   display: flex;
   gap: 1rem;
+}
+
+.book-actions p-button {
+  flex: 1;
 }
 
 .pagination-container {

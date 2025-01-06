@@ -5,22 +5,7 @@ export enum UserTypeEnum {
     ADMIN = 'ADMIN'
 }
 
-// Theme DTO
-export interface DataThemeDTO {
-    idTheme: number;
-    name: string;
-}
 
-// Book DTO
-export interface DataBookDTO {
-    idBook: number;
-    title: string;
-    author: string;
-    isbn: string;
-    publicationYear: number;
-    isAvailable: boolean;
-    themes: Set<DataThemeDTO>;
-}
 
 // Borrow DTO
 export interface DataBorrowDTO {

@@ -62,9 +62,19 @@ export class ReservationsService {
     return this.http.get<Reservation>(`${this.apiUrl}/myReservations/myActiveReservation/${idReservation}`);
   }
 
+  // Get reservation by ID (to check activation status)
+  getReservationById(idReservation: number): Observable<Reservation> {
+    return this.http.get<Reservation>(`${this.apiUrl}/myReservation/${idReservation}`);
+  }
+
   // Create a new reservation
   createReservation(createReservationDTO: Omit<CreateReservationDTO, 'idUser'>): Observable<Reservation | string> {
     return this.http.post<Reservation | string>(`${this.apiUrl}/create`, createReservationDTO);
+  }
+
+  // Cancel a reservation
+  cancelReservation(idReservation: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/cancel/${idReservation}`, {});
   }
 
   // Delete a reservation

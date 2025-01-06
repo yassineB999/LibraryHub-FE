@@ -31,6 +31,10 @@ export class UserService {
     return this.borrowsService.getMyBorrows();
   }
 
+  returnBook(borrowId: number): Observable<any> {
+    return this.borrowsService.returnBook(borrowId);
+  }
+
   reserveBook(bookId: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/reserve/${bookId}`, {});
   }

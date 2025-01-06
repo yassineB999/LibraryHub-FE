@@ -5,7 +5,6 @@
   margin-top: 64px;
 }
 
-/* Header Section */
 .header-section {
   margin-bottom: 2rem;
 }
@@ -18,11 +17,9 @@
 
 .header-content h1 {
   margin: 0;
-  color: #1a237e;
-  font-size: 2rem;
+  color: var(--text-color);
 }
 
-/* Search Section */
 .search-section {
   margin-bottom: 2rem;
 }
@@ -34,127 +31,201 @@
 
 .search-input input {
   width: 100%;
-  padding: 0.75rem 2.5rem;
 }
 
-/* Reservations Grid */
 .reservations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
   gap: 1.5rem;
-  margin-top: 2rem;
+  width: 100%;
 }
 
 .reservation-card {
+  background: var(--surface-card);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
 }
 
 .reservation-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.reservation-header h2 {
-  margin: 0;
-  color: #1a237e;
+.reservation-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.book-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-grow: 1;
+}
+
+.book-cover {
+  width: 80px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.book-details h2 {
+  margin: 0 0 0.5rem 0;
   font-size: 1.25rem;
+  color: var(--text-color);
 }
 
 .author {
-  color: #666;
-  margin: 0.5rem 0;
+  margin: 0;
+  color: var(--text-color-secondary);
+  font-size: 0.9rem;
+}
+
+.book-metadata {
+  display: flex;
+  gap: 1rem;
+  color: var(--text-color-secondary);
+  margin-bottom: 1rem;
+}
+
+.book-metadata span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.themes-container {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.theme-chip {
+  background: var(--surface-ground);
+}
+
+.more-themes {
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
 }
 
 .reservation-details {
-  margin: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--surface-ground);
+}
+
+.dates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .dates p {
-  margin: 0.5rem 0;
-  color: #666;
+  margin: 0;
+  color: var(--text-color-secondary);
+  font-size: 0.9rem;
 }
 
 .status-info {
-  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.status-section {
+  text-align: center;
 }
 
 .status-badge {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
   font-weight: 600;
-  display: inline-block;
 }
 
-/* Status Colors */
+.status-badge i {
+  font-size: 1rem;
+}
+
 .active .status-badge {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.expired .status-badge {
-  background-color: #ffebee;
-  color: #c62828;
+  background: var(--green-100);
+  color: var(--green-700);
 }
 
 .inactive .status-badge {
-  background-color: #eeeeee;
-  color: #757575;
+  background: var(--red-100);
+  color: var(--red-700);
 }
 
-.reservation-actions {
-  margin-top: 1.5rem;
+.action-buttons {
   display: flex;
-  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-top: 1px solid var(--surface-border);
 }
 
-/* Loading State */
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
+.action-buttons p-button {
+  flex: 1;
 }
 
-.loading-state p {
-  margin-top: 1rem;
-  color: #666;
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .reservations-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reservation-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .book-info {
+    flex-direction: column;
+  }
+
+  .reservation-details {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
 }
 
 /* Empty State */
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: #666;
-}
-
-.empty-state i {
-  color: #1a237e;
-  opacity: 0.5;
+  color: var(--text-color-secondary);
 }
 
 .empty-state h2 {
   margin: 1rem 0;
-  color: #1a237e;
+  color: var(--text-color);
 }
 
-/* Responsive Design */
-@media screen and (max-width: 768px) {
-  .reservations-container {
-    padding: 1rem;
-  }
-
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .search-input {
-    max-width: 100%;
-  }
-
-  .reservations-grid {
-    grid-template-columns: 1fr;
-  }
+/* Loading State */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
 }

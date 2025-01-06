@@ -6,6 +6,7 @@ import { ThemesService } from '../../../service/api/themes.service';
 import { DataThemeDTO } from '../../../models/theme.model';
 import { UserService } from '../../../service/user/user.service';
 import { CreateBorrowDTO } from '../../../models/borrow.model';
+import { ReservationsService } from '../../../service/api/reservations.service';
 
 interface Category {
   label: string;
@@ -19,6 +20,8 @@ interface Category {
 })
 export class BooksComponent implements OnInit {
   books: DataBookDTO[] = [];
+  borrowedBooks: DataBookDTO[] = [];
+  borrowMap: { [key: number]: number } = {}; // Maps book ID to borrow ID
   loading = false;
   totalElements = 0;
   currentPage = 0;
@@ -39,7 +42,8 @@ export class BooksComponent implements OnInit {
     private booksService: BooksService,
     private borrowsService: BorrowsService,
     private themesService: ThemesService,
-    private userService: UserService
+    private userService: UserService,
+    private reservationsService: ReservationsService
   ) {
     // Set minimum return date to tomorrow
     this.minReturnDate.setDate(this.minReturnDate.getDate() + 1);
@@ -80,6 +84,12 @@ export class BooksComponent implements OnInit {
     this.loading = true;
     this.userService.getMyBorrows().subscribe({
       next: (borrows: any[]) => {
+        // Store borrow IDs for each book
+        this.borrowMap = {};
+        borrows.forEach(borrow => {
+          this.borrowMap[borrow.idBook] = borrow.idBorrow;
+        });
+
         // Get the books for each borrow
         const bookPromises = borrows.map(borrow => 
           this.booksService.getBookById(borrow.idBook).toPromise()
@@ -156,16 +166,22 @@ export class BooksComponent implements OnInit {
 
   reserveBook(book: DataBookDTO): void {
     if (book.isAvailable) return;
+
+    const createReservationDTO = {
+      idBook: book.idBook,
+      idUser: '2'
+    };
     
-    /*this.borrowsService.reserveBook(book.idBook).subscribe({
+    this.reservationsService.createReservation(createReservationDTO).subscribe({
       next: () => {
         // Show success message
+        console.log('Book reserved successfully');
       },
       error: (error: any) => {
         console.error('Error reserving book:', error);
         // Show error message
       }
-    });*/
+    });
   }
 
   getBookStatus(book: DataBookDTO): string {
@@ -235,4 +251,28 @@ export class BooksComponent implements OnInit {
       return String(author);
     }
   }
+
+  returnBook(book: DataBookDTO): void {
+    const borrowId = this.borrowMap[book.idBook];
+    if (!borrowId) {
+      console.error('No borrow ID found for this book');
+      return;
+    }
+
+    this.userService.returnBook(borrowId).subscribe({
+      next: () => {
+        // Refresh the borrowed books list
+        this.loadBooks();
+        // Show success message using PrimeNG Toast (make sure you have it set up)
+      },
+      error: (error: any) => {
+        console.error('Error returning book:', error);
+        // Show error message
+      }
+    });
+  }
+}
+
+function createReservationDTO(idBook: number, arg1: string): Omit<import("../../../models/reservation.model").CreateReservationDTO, "idUser"> {
+  throw new Error('Function not implemented.');
 }

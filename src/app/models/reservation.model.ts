@@ -1,10 +1,13 @@
+import { DataBookDTO } from './book.model';
+
 export interface Reservation {
-    id: number;
+    idReservation: number;
     idUser: string;
     idBook: number;
     reservationDate: string;
     expirationDate: string;
     isActive: boolean;
+    book?: DataBookDTO; // Optional book property
 }
 
 export interface GetMyReservationsDTO {
