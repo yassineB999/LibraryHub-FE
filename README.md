@@ -1,27 +1,115 @@
-# Libraryhub
+# 📚 LibraryHub
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.7.
+A modern, feature-rich library management system built with Angular 18. LibraryHub provides an intuitive interface for managing books, users, and library operations efficiently.
 
-## Development server
+## 👥 Team
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- [Yassine Belouchi](https://github.com/yassineB999) - Developer
+- [Mohamed Hakkou](https://github.com/ImMrHak) - Developer
 
-## Code scaffolding
+## ✨ Features
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- 📖 Comprehensive Book Management
+- 👥 User Authentication with Keycloak
+- 📊 Interactive Dashboard with Charts
+- 🎨 Modern UI with PrimeNG Components
+- 🔒 Role-based Access Control
+- 📱 Responsive Design
 
-## Build
+## 🚀 Technologies
+
+- Angular 18.0.0
+- PrimeNG 16.9.1
+- Chart.js 4.4.7
+- Keycloak Integration
+
+## 🔗 Architecture
+
+This project is part of a full-stack application:
+- Frontend: Angular 18 (Current repository)
+- Backend: Spring Boot ([LibraryHub Backend](https://github.com/yassineB999/LibraryHub))
+
+## 📸 Screenshots
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+*Main dashboard showing library statistics and activities*
+
+### My Borrowed Books
+![My Borrowed Books](screenshots/MyBorrowedBooks.png)
+*Main My Borrowed Books showing library statistics and activities*
+
+### My Reserved Books
+![My Reserved Books](screenshots/My Reserved Books.png)
+*Main My Reserved Books showing library statistics and activities*
+
+### Book Management
+![Book Management](screenshots/book-management.png)
+*Interface for managing books and inventory*
+
+### User Management
+![User Management](screenshots/user-management.png)
+*User management and permissions interface*
+
+## 🛠️ Prerequisites
+
+- Node.js (v18 or higher)
+- npm (latest version)
+- Angular CLI 18.0.7
+
+## 📥 Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yassineB999/LibraryHub-FE.git
+cd LibraryHub-FE
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Configure environment variables:
+   - Create appropriate environment files in `src/environments/`
+   - Set up Keycloak configuration
+
+4. Start the development server:
+```bash
+npm start
+```
+
+Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+
+## 🏗️ Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+## 🧪 Testing
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- Unit Tests: `npm test`
+- End-to-End Tests: `ng e2e`
 
-## Running end-to-end tests
+## 📦 Key Dependencies
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- @angular/animations: ^18.0.0
+- @primeng/themes: ^19.0.0
+- chart.js: ^4.4.7
+- keycloak-angular: ^16.1.0
+- primeng: ^16.9.1
 
-## Further help
+## 🤝 Contributing
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🆘 Support
+
+For support and questions, please open an issue in the repository or contact the development team.
