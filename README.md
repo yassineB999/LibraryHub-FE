@@ -32,7 +32,7 @@ This project is part of a full-stack application:
 ## 📸 Screenshots
 
 ### Dashboard
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/Dashboard.png)
 *Main dashboard showing library statistics and activities*
 
 ### My Borrowed Books
